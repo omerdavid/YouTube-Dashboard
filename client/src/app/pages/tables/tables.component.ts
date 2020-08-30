@@ -35,7 +35,7 @@ res:any;
   constructor(private httpClient:HttpClient) {}
 
   ngOnInit() {
-    let apiKey='AIzaSyC__yvQu993fx_kxyW9GzAeqwe5MWO3seQ';
+    let apiKey='';
 let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=ויטמיקס&key=${apiKey}`;
 
     this.httpClient.get(url).subscribe(d=>{
