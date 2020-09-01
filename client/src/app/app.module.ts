@@ -1,6 +1,6 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ToastrModule } from 'ngx-toastr';
@@ -13,6 +13,9 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
+import { LoginComponent } from './authentication/login/login.component';
+import { SigninComponent } from './authentication/signin/signin.component';
+import { JwtModule } from '@auth0/angular-jwt';
 
 
 @NgModule({
@@ -22,13 +25,14 @@ import { ComponentsModule } from "./components/components.module";
     HttpClientModule,
     ComponentsModule,
     NgbModule,
-   
-   
+    ReactiveFormsModule,
+
+    JwtModule,
     RouterModule,
     AppRoutingModule,
     ToastrModule.forRoot()
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, LoginComponent, SigninComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

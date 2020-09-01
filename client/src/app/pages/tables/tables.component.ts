@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
+import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: "app-tables",
@@ -33,13 +35,19 @@ source: Array<any> = [{
 }];
 res:any;
   constructor(private httpClient:HttpClient) {}
-
+  errorHandler(error: HttpErrorResponse) {
+    console.log(error.error);
+    return Observable.throw(error.message || "server error.");
+}
   ngOnInit() {
-    let apiKey='';
-let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=ויטמיקס&key=${apiKey}`;
+    //let apiKey='';
 
-    this.httpClient.get(url).subscribe(d=>{
-     this.res=d['items'].map(v=>v);
+//let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=ויטמיקס&key=${apiKey}`;
+let keyword='ויטמיקס';
+    this.httpClient.get(`api/youTubeList/`)
+    .pipe(catchError(this.errorHandler))
+    .subscribe(d=>{
+     this.res=d;//d['items'].map(v=>v);
      console.log(this.res);
     });
   }

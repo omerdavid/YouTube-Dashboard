@@ -1,54 +1,46 @@
 const express = require('express');
+const bodyParser=require('body-parser');
 const  passport  =  require('passport');
-const  LocalStrategy  =  require('passport-local').Strategy;
+var cookieParser = require('cookie-parser');
 const app = new express();
 
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-        if(username === "admin" && password === "admin"){
-            return done(null, username);
-        } else {
-            return done("unauthorized access", false);
-        }
-    }
-));
-passport.serializeUser(function(user, done) {
-    if(user) done(null, user);
-});
-  
-passport.deserializeUser(function(id, done) {
-    done(null, id);
-});
 
-const isLoggedIn = (req, res, next) => {
-    if(req.isAuthenticated()){
-        return next()
-    }
-    return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"})
-}
-const auth = () => {
-    return (req, res, next) => {
-        passport.authenticate('local', (error, user, info) => {
-            if(error) res.status(400).json({"statusCode" : 200 ,"message" : error});
-            req.login(user, function(error) {
-                if (error) return next(error);
-                next();
-            });
-        })(req, res, next);
-    }
-}
+var debug=require('debug')('server');
+var morgan=require('morgan');
+var authRouter=require('./routes/authRouter');
+var youTubeRouter= require('./routes/youTubeRouter');
+//
+
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+
+app.use(morgan('tiny'));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 
-app.post('/authenticate', auth(),(req, res) => {
-    res.status(200).json({"statusCode" : 200 ,"message" : "hello"});
-});
-app.get('/getData', isLoggedIn, (req, res) => {
-    res.json("data")
-})
-app.get('/test',(req, res) => {
-    res.status(200).json({"statusCode" : 200 ,"message" : "hello"});
-});
+app.use('/api/authenticate',authRouter);
+
+app.use('/api/youTubeList',youTubeRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+  });
+  
+  // error handler
+  app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+  
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+  });
+  
+
 app.listen(3000, () => {
+   debug('test debug');
     console.log('App running at 3000')
 })
