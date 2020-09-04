@@ -40,7 +40,7 @@ res:any;
     return Observable.throw(error.message || "server error.");
 }
   ngOnInit() {
-    //let apiKey='';
+    //let apiKey='AIzaSyC__yvQu993fx_kxyW9GzAeqwe5MWO3seQ';
 
 //let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=ויטמיקס&key=${apiKey}`;
 let keyword='ויטמיקס';

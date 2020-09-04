@@ -1,23 +1,25 @@
 const express = require('express');
+const app=new express();
 const bodyParser=require('body-parser');
-const  passport  =  require('passport');
+//const  passport  =  require('passport');
 var cookieParser = require('cookie-parser');
-const app = new express();
-
-
+var session=require('express-session');
 var debug=require('debug')('server');
 var morgan=require('morgan');
 var authRouter=require('./routes/authRouter');
 var youTubeRouter= require('./routes/youTubeRouter');
+//const { session } = require('passport');
 //
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-
-app.use(morgan('tiny'));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(cookieParser());
+
+
+app.use(session({secret:'library'}));
+app.use(morgan('tiny'));
+require('./config/passport-config')(app);
+
 
 app.use('/api/authenticate',authRouter);
 

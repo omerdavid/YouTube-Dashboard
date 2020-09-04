@@ -1,8 +1,9 @@
 //var db = require("../db");
 
 var mongoose = require('mongoose');
- 
-module.exports = mongoose.model('User',{
+const dbConfig = require('../config/db');
+var bcrypt = require('bcrypt');
+let User= mongoose.model('User',{
         username: String,
     password: String,
     email: String,
@@ -10,26 +11,55 @@ module.exports = mongoose.model('User',{
     address: String
 });
 
-// let model = {
-//     signup: (input, cb) => {
-
-//         let data = {
-//             username: input.username,
-//             password: input.password,
-//             email: input.email,
-//             first_name: input.first_name,
-//             last_name: input.last_name,
-//             is_active: 1
-//         };
+let authModel = {
+    signup: (user, cb) => {
         
-//         return db.query("INSERT INTO users SET ?", [data], cb)
-//     },
-//     findOne: (username, cb) => {
-//         return db.query("SELECT * FROM users WHERE username=? AND is_active=1", [username], cb);
-//     },
-//     findById: (id, cb) => {
-//         return db.query("SELECT * FROM users WHERE id=? AND is_active=1", [id], cb);
-//     }
-// }
+        mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
+  
+    
+   const db= mongoose.connection;
+   db.collection('users').findOne({username:user.username})
+   .then((_user)=>{
+   
+   if(!_user){
+    
+     _user=new User();
+     _user.username=user.username;
+     _user.password=bcrypt. user.password;
 
-// module.exports = model;
+       db.collection('users').insertOne(_user).then(newUser=>{
+        // res.status(200).json({"statusCode" : 200 ,"message" : "hello authenticate",user:newUser.ops});
+       });
+   }
+   else
+   res.status(200).json({"statusCode" : 200 ,"message" : "user exist",user:_user});
+ });
+    },
+    findOne: (_username, cb) => {
+        mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
+  
+    
+   const db= mongoose.connection;
+
+   db.collection('users').findOne({username:_username}).then(function(user){
+   
+       cb(null,user);
+   })
+ 
+
+
+     },
+    findById: (_id, cb) => {
+        mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
+  
+    
+        const db= mongoose.connection;
+
+        db.collection('users').findOne({id:_id})
+        .then((_user)=>{
+             cb(_user);
+        });
+    }
+}
+
+ module.exports ={authModel:authModel,User:User};
