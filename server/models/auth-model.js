@@ -8,31 +8,38 @@ let User= mongoose.model('User',{
     password: String,
     email: String,
     gender: String,
-    address: String
+    address: String,
+    
 });
 
 let authModel = {
-    signup: (user, cb) => {
+    signup: ({username,password}, cb) => {
         
         mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
   
-    
-   const db= mongoose.connection;
-   db.collection('users').findOne({username:user.username})
-   .then((_user)=>{
    
+   const db= mongoose.connection;
+   db.collection('users').findOne({username:username,password:password})
+   .then((_user)=>{
+  
    if(!_user){
     
      _user=new User();
-     _user.username=user.username;
-     _user.password=bcrypt. user.password;
+     _user.username=username;
+     _user.password=password;
 
-       db.collection('users').insertOne(_user).then(newUser=>{
+       db.collection('users').insertOne(_user).then((response)=>{
+         console.log('ops :',response.ops[0])
+           cb(null,response.ops[0]);
         // res.status(200).json({"statusCode" : 200 ,"message" : "hello authenticate",user:newUser.ops});
-       });
+       }).catch(err=>{
+        console.log('err :',err)
+           cb(err,null)
+        });
    }
    else
-   res.status(200).json({"statusCode" : 200 ,"message" : "user exist",user:_user});
+   cb(null,_user);
+  // res.status(200).json({"statusCode" : 200 ,"message" : "user exist",user:_user});
  });
     },
     findOne: (_username, cb) => {

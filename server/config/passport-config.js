@@ -27,16 +27,16 @@ var options = {};
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 options.secretOrKey = 'secret123'; 
 
-passport.use(new Strategy(
-    function(username, password, done) {
-      User.findOne({ username: username }, function (err, user) {
-        if (err) { return done(err); }
-        if (!user) { return done(null, false); }
-        if (!user.verifyPassword(password)) { return done(null, false); }
-        return done(null, user);
-      });
-    }
-  ));
+// passport.use(new Strategy(
+//     function(username, password, done) {
+//       User.findOne({ username: username }, function (err, user) {
+//         if (err) { return done(err); }
+//         if (!user) { return done(null, false); }
+//         if (!user.verifyPassword(password)) { return done(null, false); }
+//         return done(null, user);
+//       });
+//     }
+//   ));
 
 passport.use(new Strategy(
     {
@@ -58,23 +58,15 @@ passport.use(new Strategy(
           
             return done(null, false, {message: 'Incorrect username.'});
         }
-       
-       
-        const user = result;
-        if ( password!= user.password) {
-            console.log('in correct password')
-            return done(null, false, {message: 'Incorrect password.'});
-        }
-      
-        return done(null, user);
-        // bcrypt.compare(password, user.password).then( function(err, result) {
-           
-        //     if ( ! result) {
-        //         return done(null, false, {message: 'Incorrect password.'});
-        //     }
-        //    else
-        //     return done(null, user);
-        // });
+    
+        bcrypt.compare(password, user.password).then( function(err, result) {
+        
+            if ( ! result) {
+                return done(null, false, {message: 'Incorrect password.'});
+            }
+           else
+            return done(null, user);
+        });
     });
 
   
@@ -84,7 +76,7 @@ passport.use(new Strategy(
 
 passport.use(new JwtStrategy(options, function(jwtPayload, done) {
     authModel.findById(jwtPayload.sub, function(err, result) {
-        console.log('inside findById');
+        console.log('inside JwtStrategy');
         if (err) {
             return done(err, false);
         }

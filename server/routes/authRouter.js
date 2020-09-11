@@ -12,25 +12,66 @@ const dbConfig = require('../config/db');
 
 router.get('/signup', function(req, res) {
     debug('hello from sign up');
-    const password = req.body.password;
+    
+    let password = req.query.password;
+    let username = req.query.userName;
     const saltRounds = 10;
+   
+    console.log('signup req.body.password:' ,password);
+
     bcrypt.hash(password, saltRounds, function(err, hash) {
-        req.body.password = hash;
-        authModel.signup(req.body, function(err, result) {
-            res.json({ data: result, error: err })
+
+
+        password=hash;
+
+
+        authModel.signup({username,password}, function(err,result) {
+           if(err)
+           return res.json({ data: null, error: err });
+
+          const user=getNewUserWithToken(result);
+                           
+         return   res.json({ data: user, error: err })
         });
     });
 });
+const getNewUserWithToken=(result)=>{
+  return {
+        id:result._id,
+       username: result.username,
+       email:result.email,
+       token:setToken(result._id,result.username)
 
-
+    };
+}
+const setToken=(id,userName,email)=>{
+   
+    const payload = {
+        username: userName,
+        email: email
+    }
+    const options = {
+        subject: `${id}`,
+        expiresIn: 3600
+    }
+    const token = jwt.sign(payload, 'secret123', options);
+   
+    return token;
+}
 
 const auth = () => {
     return (req, res, next) => {
-        passport.authenticate('local', (error, passportUser,info) => {
-  
-         if (error) return next(error);
+        passport.authenticate('local', (err, passportUser,info) => {
+            if (err) { return next(err); }
+console.log(passportUser);
+            if ( ! passportUser) {
+                return res.status(500).json(info.message)
+            }
+            const _user=getNewUserWithToken(passportUser);
+            res.json({user:_user,info,error});
+//          if (error) return next(error);
 
-return res.json({ user:passportUser,info,error });
+// return res.json({ user:passportUser,info,error });
          
         })(req, res, next);
     }
