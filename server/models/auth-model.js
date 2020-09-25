@@ -29,9 +29,9 @@ let authModel = {
      _user.password=password;
 
        db.collection('users').insertOne(_user).then((response)=>{
-         console.log('ops :',response.ops[0])
+        
            cb(null,response.ops[0]);
-        // res.status(200).json({"statusCode" : 200 ,"message" : "hello authenticate",user:newUser.ops});
+      
        }).catch(err=>{
         console.log('err :',err)
            cb(err,null)
@@ -39,7 +39,7 @@ let authModel = {
    }
    else
    cb(null,_user);
-  // res.status(200).json({"statusCode" : 200 ,"message" : "user exist",user:_user});
+ 
  });
     },
     findOne: (_username, cb) => {

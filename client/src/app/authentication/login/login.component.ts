@@ -24,27 +24,30 @@ export class LoginComponent implements OnInit,OnDestroy {
        userName:[''],
        password:['']
     });
-   this.sub= this.aRoute.queryParams.subscribe(params=>this.returnUrl=params['returnUrl']);
+   this.sub= this.aRoute.queryParams.subscribe(params=>!!params['returnUrl']?this.returnUrl=params['returnUrl']:this.returnUrl='dashboard');
   }
 
 loginUser(){
   const userName=this.loginform.get('userName').value;
   const password=this.loginform.get('password').value;
 
-  console.log('username :',userName,'password :',password)
+ 
 
 this.authService.authenticate(userName,password)
 .subscribe((user)=>{
-  console.log('login user :',user);
+
   
      if(!!user){
-     // let jwtHelper: JwtHelperService = new JwtHelperService();
+    
+       localStorage.setItem('currentuser',user.token);
       
-       localStorage.setItem('token',user.token);
      this.router.navigate([this.returnUrl]);
      }
-     else
-     this.router.navigate(['signin']);
+     else{
+     
+      this.router.navigate(['signin']);
+     
+    }
 }
 
 );

@@ -25,4 +25,11 @@ export class AuthService {
   public signIn(userName,password){
     return  this.http.get<ResolvedData<User>>(`api/authenticate/signup?userName=${userName}&password=${password} `).pipe(map(v=>v.data));
   }
+  public logout(){
+   const token= localStorage.getItem('currentuser');
+   console.log('token :',token);
+    localStorage.removeItem('currentUser');
+
+    return  this.http.get(`api/authenticate/logout?token=${token}`);
+  }
 }

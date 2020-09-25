@@ -11,19 +11,18 @@ const mongoose = require('mongoose');
 const dbConfig = require('../config/db');
 
 router.get('/signup', function(req, res) {
-    debug('hello from sign up');
+    
     
     let password = req.query.password;
     let username = req.query.userName;
     const saltRounds = 10;
    
-    console.log('signup req.body.password:' ,password);
 
     bcrypt.hash(password, saltRounds, function(err, hash) {
 
 
         password=hash;
-
+console.log('hash length :',hash.length);
 
         authModel.signup({username,password}, function(err,result) {
            if(err)
@@ -54,6 +53,7 @@ const setToken=(id,userName,email)=>{
         subject: `${id}`,
         expiresIn: 3600
     }
+    
     const token = jwt.sign(payload, 'secret123', options);
    
     return token;
@@ -63,20 +63,24 @@ const auth = () => {
     return (req, res, next) => {
         passport.authenticate('local', (err, passportUser,info) => {
             if (err) { return next(err); }
-console.log(passportUser);
+            
             if ( ! passportUser) {
-                return res.status(500).json(info.message)
+                return res.status(403).json(info.message)
             }
             const _user=getNewUserWithToken(passportUser);
-            res.json({user:_user,info,error});
-//          if (error) return next(error);
+           
+            res.json({user:_user,info,err});
 
-// return res.json({ user:passportUser,info,error });
          
         })(req, res, next);
     }
 };
 router.get('/login',auth());
+
+router.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
 // router.get('/login', function(req, res, next) {
 //    const {username,password}= req.query;
     

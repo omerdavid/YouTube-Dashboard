@@ -23,6 +23,12 @@ const routes: Routes = [
     
   },
   {
+    path: "logout",
+    component: LoginComponent
+   
+    
+  },
+  {
     path: "signin",
     component: SigninComponent
    
