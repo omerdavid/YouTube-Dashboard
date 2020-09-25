@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   templateUrl: './login.component.html',
@@ -13,6 +14,7 @@ import { Subscription } from 'rxjs';
 export class LoginComponent implements OnInit,OnDestroy {
   loginform:FormGroup;
   returnUrl:string='dashboard';
+  errorMsg:string;
     sub:Subscription;
     constructor(private fb:FormBuilder,private authService:AuthService,private router:Router,private aRoute:ActivatedRoute) { }
   ngOnDestroy(): void {
@@ -36,7 +38,7 @@ loginUser(){
 this.authService.authenticate(userName,password)
 .subscribe((user)=>{
 
-  
+          console.log(user);
      if(!!user){
     
        localStorage.setItem('currentuser',user.token);
@@ -48,7 +50,7 @@ this.authService.authenticate(userName,password)
       this.router.navigate(['signin']);
      
     }
-}
+}, error => (console.log(this.errorMsg = error.error))
 
 );
 }

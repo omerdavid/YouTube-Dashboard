@@ -19,11 +19,12 @@ let authModel = {
   
    
    const db= mongoose.connection;
-   db.collection('users').findOne({username:username,password:password})
+
+   db.collection('users').findOne({username:username})
    .then((_user)=>{
   
    if(!_user){
-    
+    console.log('new  user :',_user);
      _user=new User();
      _user.username=username;
      _user.password=password;
@@ -37,8 +38,10 @@ let authModel = {
            cb(err,null)
         });
    }
-   else
-   cb(null,_user);
+   else{
+    console.log('els :',_user);
+    cb({statusCode:409},null);
+   }
  
  });
     },
@@ -49,7 +52,7 @@ let authModel = {
    const db= mongoose.connection;
 
    db.collection('users').findOne({username:_username}).then(function(user){
-   
+      console.log('already exsit :',user);
        cb(null,user);
    })
  

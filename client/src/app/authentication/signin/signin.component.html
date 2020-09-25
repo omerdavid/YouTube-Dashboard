@@ -7,6 +7,7 @@
                     <p class="text-muted"> Please enter user Name and password!</p>
                      <input type="text" name="" formControlName="userName" placeholder="Username">
                       <input type="password" name="" formControlName="password" placeholder="Password">
+                      <p style="color: red;font-size: medium;">{{message}}</p>
                        <a class="forgot text-muted" href="#">Forgot password?</a> 
                        <input type="submit" name="" (click)="signIn()" value="SignIn" href="#">
                     <!-- <div class="col-md-12">

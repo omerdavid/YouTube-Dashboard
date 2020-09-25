@@ -7,8 +7,9 @@
                     <p class="text-muted"> Please enter your login and password!</p>
                      <input type="text" name="" formControlName="userName" placeholder="Username">
                       <input type="password" name="" formControlName="password" placeholder="Password">
+                      <p style="color: red;">{{errorMsg}}</p>
                        <a class="forgot text-muted" href="#">Forgot password?</a> 
-                       <a class="link" routerLink='/signin'>SignIn</a> 
+                       <a class="link ml-2"  routerLink='/signin'>SignIn</a> 
                        <input type="submit" name="" (click)="loginUser()" value="Login" href="#">
                     <div class="col-md-12">
                         <ul class="social-network social-circle">

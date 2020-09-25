@@ -20,9 +20,7 @@ router.get('/signup', function(req, res) {
 
     bcrypt.hash(password, saltRounds, function(err, hash) {
 
-
         password=hash;
-console.log('hash length :',hash.length);
 
         authModel.signup({username,password}, function(err,result) {
            if(err)

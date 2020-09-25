@@ -16,6 +16,7 @@ signInform
   :FormGroup;
   returnUrl:string='dashboard';
     sub:Subscription;
+    message:string;
     constructor(private fb:FormBuilder,private authService:AuthService,private router:Router,private aRoute:ActivatedRoute) { }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
@@ -33,17 +34,19 @@ signIn(){
   const userName=this.signInform.get('userName').value;
   const password=this.signInform.get('password').value;
 
-  console.log('username :',userName,'password :',password)
+ 
 
 this.authService.signIn(userName,password)
-.subscribe((user)=>{
-  
-     if(!!user){
-       localStorage.setItem('token',user.token);
+.subscribe((res)=>{
+  console.log(res);
+     if(!!res.data){
+       localStorage.setItem('token',res.data.token);
      this.router.navigate(['dashboard']);
      }
-     else
+     else{
+this.message=res.error.statusCode==409?'User already exist':'Server error';
      this.router.navigate(['signin']);
+     }
 }
 
 );
