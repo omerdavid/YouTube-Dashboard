@@ -13,14 +13,14 @@ export class AuthService {
   constructor(private http:HttpClient,) { }
   public isAuthenticated(): boolean {
     let jwtHelper: JwtHelperService = new JwtHelperService();
-    const token = localStorage.getItem('token');
-    console.log('token isAuth: ',token);
+    const token = localStorage.getItem('currentuser');
+    console.log('currentuser isAuth: ',token);
     // Check whether the token is expired and return
     // true or false
     return !jwtHelper.isTokenExpired(token);
   }
-  public authenticate(userName,password):Observable<User>{
-  return  this.http.get<User>(`api/authenticate/login?userName=${userName}&password=${password} `);
+  public authenticate(userName,password):Observable<ResolvedData<User>>{
+  return  this.http.get<ResolvedData<User>>(`api/authenticate/login?userName=${userName}&password=${password} `);
   }
   public signIn(userName,password){
     return  this.http.get<ResolvedData<User>>(`api/authenticate/signup?userName=${userName}&password=${password} `);

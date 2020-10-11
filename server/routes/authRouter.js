@@ -65,9 +65,9 @@ const auth = () => {
             if ( ! passportUser) {
                 return res.status(403).json(info.message)
             }
-            const _user=getNewUserWithToken(passportUser);
+            const user=getNewUserWithToken(passportUser);
            
-            res.json({user:_user,info,err});
+            res.json({data:user,info,err});
 
          
         })(req, res, next);

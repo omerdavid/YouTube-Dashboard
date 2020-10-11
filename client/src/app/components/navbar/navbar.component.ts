@@ -32,7 +32,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.sidebarVisible = false;
   }
   logout() {
-    console.log('logout');
+    
     this.authService.logout();
     this.router.navigate(['login']);
 }

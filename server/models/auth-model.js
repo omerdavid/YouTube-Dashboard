@@ -52,7 +52,7 @@ let authModel = {
    const db= mongoose.connection;
 
    db.collection('users').findOne({username:_username}).then(function(user){
-      console.log('already exsit :',user);
+    
        cb(null,user);
    })
  

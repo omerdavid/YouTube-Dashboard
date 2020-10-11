@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subscription } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   templateUrl: './login.component.html',
@@ -36,12 +36,12 @@ loginUser(){
  
 
 this.authService.authenticate(userName,password)
-.subscribe((user)=>{
+.subscribe((data)=>{
 
-          console.log(user);
-     if(!!user){
+          console.log(data.data);
+     if(!!data.data){
     
-       localStorage.setItem('currentuser',user.token);
+       localStorage.setItem('currentuser',data.data.token);
       
      this.router.navigate([this.returnUrl]);
      }
