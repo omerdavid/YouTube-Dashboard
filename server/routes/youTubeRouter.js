@@ -7,10 +7,11 @@ const axios = require('axios');
 
 router.route('/').get(async (req, res) => {
   try{
+
     let apiUrl=await configModel.findKey({key:'youTubeUrl'});
   let apiKey=  await configModel.findKey({key:'googleApiKey'});
- let searchText='ויטמיקס';
- apiUrl.value+='&q='+searchText+`&key=${apiKey.value}`;
+ let searchText=req.query.searchText;
+ apiUrl.value+=`&q=${searchText}&key=${apiKey.value}`;
 const _url=new URL(apiUrl.value);
 
 

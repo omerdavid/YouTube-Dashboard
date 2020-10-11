@@ -14,10 +14,9 @@ let configModel={
     await mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
   
     try{
-      
-    const db=await mongoose.connection;
- 
-  let res= await  mongoose.connection.collection('config').findOne({key:key});
+ const col=  mongoose.connection.collection('config');
+  let res=await col.findOne({key:key});
+
   return res;
     }
     catch(ex){

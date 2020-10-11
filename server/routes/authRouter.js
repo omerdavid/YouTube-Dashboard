@@ -52,7 +52,7 @@ const setToken=(id,userName,email)=>{
         expiresIn: 3600
     }
     
-    const token = jwt.sign(payload, 'secret123', options);
+    const token = jwt.sign(payload, 'hadasa', options);
    
     return token;
 }

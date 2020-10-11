@@ -40,11 +40,9 @@ res:any;
     return Observable.throw(error.message || "server error.");
 }
   ngOnInit() {
-    //let apiKey='AIzaSyC__yvQu993fx_kxyW9GzAeqwe5MWO3seQ';
 
-//let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=ויטמיקס&key=${apiKey}`;
-let keyword='ויטמיקס';
-    this.httpClient.get(`api/youTubeList/`)
+let keyword='גרעיני עפולה';
+    this.httpClient.get(`api/youTubeList?searchText=${keyword}`)
     .pipe(catchError(this.errorHandler))
     .subscribe(d=>{
      this.res=d;//d['items'].map(v=>v);
