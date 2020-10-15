@@ -16,8 +16,16 @@
             <!--- Note that these columns can be defined in any order.
                   The actual rendered columns are set as a property on the row definition" -->
                   <ng-container matColumnDef="videoId">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> VideoId </th>
-                    <td mat-cell *matCellDef="let element"> {{element.videoId}} </td>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Video </th>
+                    <td mat-cell *matCellDef="let element">
+                        <iframe width="220" height="115"
+                       [src]='element.videoUrl'>
+                        </iframe>
+                         </td>
+                  </ng-container>
+                  <ng-container matColumnDef="youTubeRank">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> YouTubeRank </th>
+                    <td mat-cell *matCellDef="let element"> {{element.youTubeRank}} </td>
                   </ng-container>
             <!-- Position Column -->
             <ng-container matColumnDef="title">

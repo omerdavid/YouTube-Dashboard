@@ -6,6 +6,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import {MatTableDataSource} from '@angular/material/table';
+import { DomSanitizer } from '@angular/platform-browser';
+import { YouTubeSearchResults } from './models/youTube-results';
 export interface Car {
   id?;
   vin?;
@@ -26,21 +28,23 @@ export interface Car {
 })
 export class TablesComponent implements OnInit,AfterViewInit {
 
-  public displayedColumns: string[] = ['videoId', 'title', 'channelTitle', 'description'];
+  public displayedColumns: string[] = ['videoId', 'youTubeRank','title', 'channelTitle', 'description'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-cols: any[];
-dataSource:MatTableDataSource<any>;
-selectedProducts:any[];
-product:any;
+
+dataSource:MatTableDataSource<YouTubeSearchResults>;
+selectedProducts:YouTubeSearchResults[];
+product:YouTubeSearchResults;
 submitted:boolean;
 productDialog: boolean;
 dataSourceultsLength = 0;
 isLoading = true;
-
-  constructor(private httpClient:HttpClient,private messageService: MessageService, private confirmationService: ConfirmationService) {}
+youTubeUrl:string='https://www.youtube.com/embed/';
+  constructor(private httpClient:HttpClient,
+    private messageService: MessageService,
+     private confirmationService: ConfirmationService,private _sanitizer: DomSanitizer) {}
   ngAfterViewInit(): void {
    
   }
@@ -51,15 +55,29 @@ isLoading = true;
 }
   ngOnInit() {
 
-let keyword='גרעיני עפולה';
+let keyword='ויטמיקס';
+let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
+
     this.httpClient.get(`api/youTubeList?searchText=${keyword}`)
     .pipe(  tap(console.log),
       map((r:any)=>r.res1
     .map((f:any)=>{
-      return {videoId:f.id.videoId, title:f.snippet.title,channelTitle:f.snippet.channelTitle,description:f.snippet.description}}))
+      
+      let tmp= new YouTubeSearchResults();
+      tmp.videoId=f.id.videoId;
+      tmp.youTubeRank=0;
+      tmp.videoUrl=this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl+f.id.videoId);
+     tmp.title= f.snippet.title;
+      tmp.channelTitle= f.snippet.channelTitle;
+      tmp.description=f.snippet.description;
+      return tmp;
+      }
+        ))
     ,catchError(this.errorHandler))
-    .subscribe(data=>{
-   
+    .subscribe((data:YouTubeSearchResults[])=>{
+       const x=data.findIndex(f=>f.title=myVideo);
+       console.log('rank :',x);
+       data[0].youTubeRank=x;
         // Flip flag to show that loading has finished.
         this.isLoading = false;
     
@@ -86,14 +104,14 @@ editProduct(product: any) {
     this.productDialog = true;
 }
 
-deleteProduct(product: any) {
+deleteProduct(product: YouTubeSearchResults) {
     this.confirmationService.confirm({
-        message: 'Are you sure you want to delete ' + product.name + '?',
+        message: 'Are you sure you want to delete ' + product.title + '?',
         header: 'Confirm',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-            this.dataSource.data = this.dataSource.data.filter(val => val.id !== product.id);
-            this.product = {};
+            this.dataSource.data = this.dataSource.data.filter(val => val.videoId !== product.videoId);
+            this.product =new YouTubeSearchResults();
 
             this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
         }
@@ -108,21 +126,21 @@ hideDialog() {
 saveProduct() {
     this.submitted = true;
 
-    if (this.product.name.trim()) {
-        if (this.product.id) {
-            this.dataSource[this.findIndexById(this.product.id)] = this.product;                
+    if (this.product.title.trim()) {
+        if (this.product.videoId) {
+            this.dataSource[this.findIndexById(this.product.videoId)] = this.product;                
             this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Updated', life: 3000});
         }
         else {
-            this.product.id = this.createId();
-            this.product.image = 'product-placeholder.svg';
+            this.product.videoId = this.createId();
+           
             this.dataSource.data.push(this.product);
             this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Created', life: 3000});
         }
 
         this.dataSource.data = [...this.dataSource.data];
         this.productDialog = false;
-        this.product = {};
+        this.product =new YouTubeSearchResults();
     }
 }
 
