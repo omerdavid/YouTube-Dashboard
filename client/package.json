@@ -61,11 +61,13 @@
   "private": false,
   "dependencies": {
     "@angular/animations": "9.0.5",
+    "@angular/cdk": "^10.2.4",
     "@angular/common": "9.0.5",
     "@angular/compiler": "9.0.5",
     "@angular/core": "9.0.5",
     "@angular/forms": "9.0.5",
     "@angular/localize": "^9.0.5",
+    "@angular/material": "^10.2.5",
     "@angular/platform-browser": "9.0.5",
     "@angular/platform-browser-dynamic": "9.0.5",
     "@angular/router": "9.0.5",
@@ -75,6 +77,9 @@
     "core-js": "3.6.4",
     "element-resize-detector": "^1.1.14",
     "ngx-toastr": "10.0.4",
+    "primeflex": "^2.0.0",
+    "primeicons": "^4.0.0",
+    "primeng": "^10.0.3",
     "rxjs": "6.5.2",
     "tslib": "1.10.0",
     "zone.js": "0.10.2"

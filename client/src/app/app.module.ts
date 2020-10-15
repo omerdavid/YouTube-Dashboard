@@ -17,23 +17,30 @@ import { LoginComponent } from './authentication/login/login.component';
 import { SigninComponent } from './authentication/signin/signin.component';
 import { JwtModule } from '@auth0/angular-jwt';
 
+import { ConfirmationService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
+
+import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
+    BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     ComponentsModule,
     NgbModule,
     ReactiveFormsModule,
-
     JwtModule,
     RouterModule,
     AppRoutingModule,
+   
     ToastrModule.forRoot()
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, LoginComponent, SigninComponent],
-  providers: [],
+  providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

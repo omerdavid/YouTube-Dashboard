@@ -1,15 +1,15 @@
 const express = require('express');
 const app=new express();
 const bodyParser=require('body-parser');
-//const  passport  =  require('passport');
+
 var cookieParser = require('cookie-parser');
 var session=require('express-session');
 var debug=require('debug')('server');
 var morgan=require('morgan');
 var authRouter=require('./routes/authRouter');
 var youTubeRouter= require('./routes/youTubeRouter');
-//const { session } = require('passport');
-//
+
+
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -44,5 +44,5 @@ app.use(function(req, res, next) {
 
 app.listen(3000, () => {
    debug('test debug');
-    console.log('App running at 3000')
+    console.log('App running  at 3000')
 })
