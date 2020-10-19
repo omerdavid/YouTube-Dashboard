@@ -42,6 +42,7 @@ productDialog: boolean;
 dataSourceultsLength = 0;
 isLoading = true;
 youTubeUrl:string='https://www.youtube.com/embed/';
+
   constructor(private httpClient:HttpClient,
     private messageService: MessageService,
      private confirmationService: ConfirmationService,private _sanitizer: DomSanitizer) {}
@@ -53,8 +54,14 @@ youTubeUrl:string='https://www.youtube.com/embed/';
     console.log(error.error);
     return throwError(error.message || "server error.");
 }
-  ngOnInit() {
 
+addVideo(){
+  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'"yUi3qOLuS4E"',keyWords:['ויטמיקס','בלנדר מקצועי']}).subscribe(res=>{
+    console.log(res);
+  })
+}
+  ngOnInit() {
+  this.addVideo();
 let keyword='ויטמיקס';
 let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
 

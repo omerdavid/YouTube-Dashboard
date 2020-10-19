@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 const dbConfig = require('../config/db');
 var bcrypt = require('bcrypt');
+
 let User= mongoose.model('User',{
         username: String,
     password: String,

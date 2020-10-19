@@ -8,7 +8,7 @@ var debug=require('debug')('server');
 var morgan=require('morgan');
 var authRouter=require('./routes/authRouter');
 var youTubeRouter= require('./routes/youTubeRouter');
-
+const passport = require('passport');
 
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -17,6 +17,7 @@ app.use(cookieParser());
 
 
 app.use(session({secret:'library'}));
+//app.use(passport.session());
 app.use(morgan('tiny'));
 require('./config/passport-config')(app);
 
