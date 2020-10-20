@@ -16,7 +16,7 @@ function passportConfig(app){
 
 //Store user in session
 passport.serializeUser(function(user, done) {
-    if(user) done(null, user.id);
+    if(user) done(null, user);
 });
   //Retrieve user from session
 passport.deserializeUser(function(id, done) {
@@ -33,7 +33,7 @@ passport.use(new Strategy(
         passwordField: 'password'
     },
     function(username, password, done) {
-        
+        console.log('inside Strategy');
   authModel.findOne(username,function(err,user){
     
        if (!user||user.length === 0) {

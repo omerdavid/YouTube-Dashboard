@@ -62,9 +62,10 @@ const auth = () => {
                 return res.status(403).json(info.message)
             }
             const user=getNewUserWithToken(passportUser);
-           
-            res.json({data:user,info,err});
 
+            req.login(user,function(err){
+                res.json({data:user,info,err});
+            });
          
         })(req, res, next);
     }
