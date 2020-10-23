@@ -2,7 +2,7 @@ const { configModel } = require('../models/config-model');
 const { videoModel } = require('../models/video-model');
 const axios = require('axios');
 const logger = require('./log-handler');
-
+const moment=require('moment');
 
 const  youTubeService= {
    
@@ -39,13 +39,13 @@ const  youTubeService= {
 
     },
     rankVideos:  async (videosPerKeyWord)=> {
-
+   
+      
         for (let video of videosPerKeyWord) {
             let videosArr = await youTubeService.search(video.keyWord);
             let rank = videosArr.findIndex(x => x.id.videoId == video.videoId);
             video.rank = rank;
-            let dateNow =new Date(Date.now());
-            video.dateChecked = dateNow.getDate() + '/' + dateNow.getMonth() + 1 + '/' + dateNow.getYear();
+            video.dateChecked =moment().format('DD/MM/yyyy');;
         }
         return videosPerKeyWord;
     },
