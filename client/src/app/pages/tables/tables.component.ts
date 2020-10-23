@@ -56,7 +56,7 @@ youTubeUrl:string='https://www.youtube.com/embed/';
 }
 
 addVideo(){
-  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'"yUi3qOLuS4E"',keyWords:['ויטמיקס','בלנדר מקצועי']}).subscribe(res=>{
+  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'yUi3qOLuS4E',keyWords:['ויטמיקס','בלנדר מקצועי']}).subscribe(res=>{
     console.log(res);
   })
 }

@@ -4,18 +4,12 @@ const bodyParser=require('body-parser');
 
 var cookieParser = require('cookie-parser');
 var session=require('express-session');
-var debug=require('debug')('server');
+
 var morgan=require('morgan');
 var authRouter=require('./routes/authRouter');
 var youTubeRouter= require('./routes/youTubeRouter');
-const passport = require('passport');
-const pino = require('pino');
-const expressPino = require('express-pino-logger');
 
-const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
-const expressLogger = expressPino({ logger });
-
-app.use(expressLogger);
+const logger=require('./services/log-handler');
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -50,6 +44,7 @@ app.use(function(req, res, next) {
   
 
 app.listen(3000, () => {
-   debug('test debug');
-    console.log('App running  at 3000')
+ 
+  logger.debug('App running  at 3000');
+   
 })

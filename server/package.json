@@ -23,6 +23,7 @@
     "google-auth-library": "^6.1.0",
     "googleapis": "^61.0.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "mongoose": "^5.10.1",
     "morgan": "^1.10.0",
@@ -31,5 +32,8 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pino": "^6.7.0"
+  },
+  "devDependencies": {
+    "pino-pretty": "^4.3.0"
   }
 }
