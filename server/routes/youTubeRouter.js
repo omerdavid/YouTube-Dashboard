@@ -1,49 +1,47 @@
 const express = require('express');
-const router=express.Router();
-let YouTubeService = require('../services/youTubeService.js');
-
+const router = express.Router();
+let youTubeService = require('../services/youTubeService.js');
+const logger = require('pino')()
 
 router.route('/').get(async (req, res) => {
-  try{
-      const youTubeService=new YouTubeService();
-      let searchText=req.query.searchText;
-   let res1= await  youTubeService.search(searchText);
-   
-  
-  res.status(200).json({"statusCode" : 200 ,"res1" : res1});
+  try {
+   // const youTubeService = new YouTubeService();
+//
+    let searchText = req.query.searchText;
+
+    let res1 = await youTubeService.search(searchText);
+
+
+    res.status(200).json({ "statusCode": 200, "res1": res1 });
   }
-  catch(err){console.log(err)}
+  catch (err) { logger.debug(err); }
 });
 router.route('/addVideo').post(async (req, res) => {
-  try{
-    console.log('addVideo');
-    const youTubeService=new YouTubeService();
+  try {
+   
+  //  const youTubeService = new YouTubeService();
 
- console.log(req.user);
- 
- let videoId=req.body.videoId; 
- let keyWords=req.body.keyWords; 
-  let user=req.user;
- 
- 
- 
- let videosPerKeyWord= await   youTubeService.addVideo(videoId,keyWords,user.id);
 
- videosPerKeyWord.forEach(async (video)=>{
-       let videosArr= await youTubeService.search(video.keyWord);       
-     let rank=  videosArr.findIndex(x=>x.videoId==video.videoId);
-     video.rank=rank;
-     let dateNow=Date.now();
-     video.dateChecked=dateNow.getDate()+'/'+dateNow.getMonth()+1+'/'+dateNow.getYear();
 
-     
- });
- await youTubeService.updateVideos(videosPerKeyWord);
+    let videoId = req.body.videoId;
+    let keyWords = req.body.keyWords;
+    let user = req.user;
 
-  res.status(200).json({"statusCode" : 200 ,"res" : videosPerKeyWord});
+   
+
+    let videosPerKeyWord = await youTubeService.addVideo(videoId, keyWords, user.id); 
+
+    let userVideos = await youTubeService.getUserVideos(user.id);
+
+    let rankedVideos=await youTubeService.rankVideos(userVideos);
+   
+    await youTubeService.updateVideos(rankedVideos);
+
+    res.status(200).json({ "statusCode": 200, "res": videosPerKeyWord });
   }
-  catch(err){console.log(err)}
+
+  catch (err) { logger.debug(err); }
 });
 //});
 
-module.exports=router;
+module.exports = router;

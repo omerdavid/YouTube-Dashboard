@@ -12,7 +12,7 @@ let configModel = {
    findKey: async ({ key }) => {
 
       try {
-         
+        
          const col = await mongooseService.collection('config');
 
          let res = await col.findOne({ key: key });
@@ -22,7 +22,7 @@ let configModel = {
       catch (ex) {
          console.log(ex);
       } finally {
-         mongooseService.close();
+        // mongo.close();
 
       }
    }
