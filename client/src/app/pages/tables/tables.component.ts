@@ -1,15 +1,16 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
+import { sortBy } from 'lodash';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { KeyWordData, YouTubeSearchResults } from './models/youTube-results';
-import {orderBy} from 'lodash';
-import {sortBy} from 'lodash';
+import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
+import { KeyWordData, UserVideos } from './models/youTube-results';
 
 
 @Component({
@@ -20,15 +21,15 @@ import {sortBy} from 'lodash';
 })
 export class TablesComponent implements OnInit,AfterViewInit {
 
-  public displayedColumns: string[] = ['videoId', 'keyWords','title', 'channelTitle', 'description'];
+  public displayedColumns: string[] = ['videoId', 'keyWords','title', 'channelTitle', 'description','actions'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
 
-dataSource:MatTableDataSource<YouTubeSearchResults>;
-selectedProducts:YouTubeSearchResults[];
-product:YouTubeSearchResults;
+dataSource:MatTableDataSource<UserVideos>;
+selectedProducts:UserVideos[];
+product:UserVideos;
 submitted:boolean;
 productDialog: boolean;
 dataSourceultsLength = 0;
@@ -39,7 +40,7 @@ youTubeUrl:string='https://www.youtube.com/embed/';
 
   constructor(private httpClient:HttpClient,
     private messageService: MessageService,
-     private confirmationService: ConfirmationService,private _sanitizer: DomSanitizer) {}
+     private confirmationService: ConfirmationService,private _sanitizer: DomSanitizer,public dialogService: MatDialog) {}
   ngAfterViewInit(): void {
    
   }
@@ -58,7 +59,20 @@ getLastDateChecked(data):KeyWordData{
     let sortedArr=sortBy(data,'dataChecked','desc');
     return sortedArr[0];
 }
+openAddDialog() {
+  const dialogRef = this.dialogService.open(AddDialogComponent, {
+    data: {issue: {} }
+  });
 
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 1) {
+      // After dialog is closed we're doing frontend updates
+      // For add we're just pushing a new row inside DataService
+     // this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
+    //  this.refreshTable();
+    }
+  });
+}
 addVideo(){
 
 
@@ -78,13 +92,13 @@ addVideo(){
     //let keyword='ויטמיקס';
 //let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
 
-    this.httpClient.get(`api/youTubeList?searchText`)
+    this.httpClient.get(`api/youTubeList`)
     .pipe( 
     map((f:any)=>{
         console.log('fdata',f);
       return  f.map(g=>{
 
-          let tmp= new YouTubeSearchResults();
+          let tmp= new UserVideos();
           tmp.videoId=g.videoId;
           tmp.videoUrl=this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl+g.videoId);
           tmp.keyWords=g.keyWords;
@@ -128,14 +142,14 @@ editProduct(product: any) {
     this.productDialog = true;
 }
 
-deleteProduct(product: YouTubeSearchResults) {
+deleteProduct(product: UserVideos) {
     this.confirmationService.confirm({
         message: 'Are you sure you want to delete ' + product.title + '?',
         header: 'Confirm',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
             this.dataSource.data = this.dataSource.data.filter(val => val.videoId !== product.videoId);
-            this.product =new YouTubeSearchResults();
+            this.product =new UserVideos();
 
             this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
         }
@@ -164,7 +178,7 @@ saveProduct() {
 
         this.dataSource.data = [...this.dataSource.data];
         this.productDialog = false;
-        this.product =new YouTubeSearchResults();
+        this.product =new UserVideos();
     }
 }
 

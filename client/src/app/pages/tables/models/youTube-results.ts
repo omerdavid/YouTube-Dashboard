@@ -1,9 +1,9 @@
 import { SafeResourceUrl } from '@angular/platform-browser';
 
-export class YouTubeSearchResults{
+export class UserVideos{
     videoId:string;
-    keyWords:KeyWord[]
     videoUrl:string|SafeResourceUrl;
+    keyWords:KeyWord[]
     title:string;
     channelTitle:string;
     description:string;
