@@ -23,14 +23,24 @@
                         </iframe>
                          </td>
                   </ng-container>
-                  <ng-container matColumnDef="youTubeRank">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> YouTubeRank </th>
-                    <td mat-cell *matCellDef="let element"> {{element.youTubeRank}} </td>
+                  <ng-container matColumnDef="keyWords">
+
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> KeyWords </th>
+
+                    <td mat-cell *matCellDef="let element" >
+                       <div *ngFor="let keyWord of element.keyWords">
+                       <button class="btn btn-primary" (click)='keyWordClick(keyWord)'>
+                           {{keyWord.name}}
+                       </button>  
+                      </div>
+                      
+                    
+                    </td>
                   </ng-container>
             <!-- Position Column -->
             <ng-container matColumnDef="title">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-              <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Rank </th>
+              <td mat-cell *matCellDef="let element"><div *ngIf='currentKeyWord'> <p style="color: black;">Rank: {{currentKeyWord.rank}}</p> <p style="color: black;">Last date checked : {{currentKeyWord.dateChecked}}</p></div></td>
             </ng-container>
           
             <!-- Name Column -->

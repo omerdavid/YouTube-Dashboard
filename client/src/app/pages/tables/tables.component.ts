@@ -1,23 +1,15 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { HttpClient,HttpErrorResponse } from '@angular/common/http';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import { catchError, map, tap } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
-import { YouTubeSearchResults } from './models/youTube-results';
-export interface Car {
-  id?;
-  vin?;
-  year?;
-  brand?;
-  color?;
-  price?;
-  saleDate?;
-}
-
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { KeyWordData, YouTubeSearchResults } from './models/youTube-results';
+import {orderBy} from 'lodash';
+import {sortBy} from 'lodash';
 
 
 @Component({
@@ -28,7 +20,7 @@ export interface Car {
 })
 export class TablesComponent implements OnInit,AfterViewInit {
 
-  public displayedColumns: string[] = ['videoId', 'youTubeRank','title', 'channelTitle', 'description'];
+  public displayedColumns: string[] = ['videoId', 'keyWords','title', 'channelTitle', 'description'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -41,6 +33,8 @@ submitted:boolean;
 productDialog: boolean;
 dataSourceultsLength = 0;
 isLoading = true;
+currentKeyWord:KeyWordData;
+
 youTubeUrl:string='https://www.youtube.com/embed/';
 
   constructor(private httpClient:HttpClient,
@@ -55,36 +49,59 @@ youTubeUrl:string='https://www.youtube.com/embed/';
     return throwError(error.message || "server error.");
 }
 
+keyWordClick(keyWord){ 
+  this.currentKeyWord= this.getLastDateChecked(keyWord.data);
+}
+
+getLastDateChecked(data):KeyWordData{
+  
+    let sortedArr=sortBy(data,'dataChecked','desc');
+    return sortedArr[0];
+}
+
 addVideo(){
-  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'yUi3qOLuS4E',keyWords:['ויטמיקס','בלנדר מקצועי']}).subscribe(res=>{
+
+
+  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'yUi3qOLuS4E',keyWords:['ויטמיקס','בלנדר מקצועי']})
+  .subscribe(res=>{
     console.log(res);
   })
 }
-  ngOnInit() {
-  this.addVideo();
-let keyword='ויטמיקס';
-let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
 
-    this.httpClient.get(`api/youTubeList?searchText=${keyword}`)
-    .pipe(  tap(console.log),
-      map((r:any)=>r.res1
-    .map((f:any)=>{
+  ngOnInit() {
+   this.loadVideos();
+
+  }
+
+  loadVideos(){
+  
+    //let keyword='ויטמיקס';
+//let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
+
+    this.httpClient.get(`api/youTubeList?searchText`)
+    .pipe( 
+    map((f:any)=>{
+        console.log('fdata',f);
+      return  f.map(g=>{
+
+          let tmp= new YouTubeSearchResults();
+          tmp.videoId=g.videoId;
+          tmp.videoUrl=this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl+g.videoId);
+          tmp.keyWords=g.keyWords;
+          // tmp.title= f.snippet.title;
+          // tmp.channelTitle= f.snippet.channelTitle;
+          // tmp.description=f.snippet.description;
+          return tmp;  
+        
+        
+        });
       
-      let tmp= new YouTubeSearchResults();
-      tmp.videoId=f.id.videoId;
-      tmp.youTubeRank=0;
-      tmp.videoUrl=this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl+f.id.videoId);
-     tmp.title= f.snippet.title;
-      tmp.channelTitle= f.snippet.channelTitle;
-      tmp.description=f.snippet.description;
-      return tmp;
       }
-        ))
+        )
     ,catchError(this.errorHandler))
-    .subscribe((data:YouTubeSearchResults[])=>{
-       const x=data.findIndex(f=>f.title=myVideo);
-       console.log('rank :',x);
-       data[0].youTubeRank=x;
+    .subscribe((data:any)=>{
+     
+       console.log('data : ',data);
         // Flip flag to show that loading has finished.
         this.isLoading = false;
     

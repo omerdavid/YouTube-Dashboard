@@ -6,7 +6,7 @@ const logger = require('./log-handler');
 
 const moment = require('moment');
 
-const {groupBy,map}=require('lodash');
+const { groupBy, map } = require('lodash');
 
 
 const youTubeService = {
@@ -64,21 +64,29 @@ const youTubeService = {
         } catch (err) { logger.debug(err); }
     },
     createDto: (userVideo) => {
-        const gr =groupBy(userVideo, 'videoId');
+        const gr = groupBy(userVideo, 'videoId');
+        let arr = [];
 
-        logger.debug(gr);
         for (let g in gr) {
-            logger.debug(gr[g]);
+            const newObj = {};
+            newObj.videoId = g;
+            const keyWords = groupBy(gr[g], 'keyWord');
+            let videsoKeyWords=[];
+            for (let k in keyWords){
+                
+            let x=keyWords[k].map(kw => {
 
-            gr[g]=groupBy(gr[g], 'keyWord');
-            
-            logger.debug(gr);
-        } 
+                    return  { dateChecked: kw.dateChecked, rank: kw.rank };
+                });
+                videsoKeyWords.push({name :k,data:x});
+            }
+            newObj.keyWords=videsoKeyWords;
+            arr.push(newObj);
 
-        
 
+        }
 
-        return gr;
+        return arr;
     }
 }
 module.exports = youTubeService;

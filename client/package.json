@@ -76,6 +76,7 @@
     "chart.js": "2.8.0",
     "core-js": "3.6.4",
     "element-resize-detector": "^1.1.14",
+    "lodash": "^4.17.20",
     "ngx-toastr": "10.0.4",
     "primeflex": "^2.0.0",
     "primeicons": "^4.0.0",
