@@ -1,9 +1,9 @@
-<div>
-    <h3 mat-dialog-title>Add new Video</h3>
 
-    <form class="mat-dialog-content" (ngSubmit)="submit" style="height: 200px;" [formGroup]="dialogForm">
+    <h3 mat-dialog-title style="color: black;">Add new Video</h3>
+
+    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"  (ngSubmit)="submit"  [formGroup]="dialogForm">
       
-        
+        <div class="form-group">
 
         <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Enter Video Url</mat-label>
@@ -11,8 +11,9 @@
             <input matInput placeholder="https://www.youtube.com/embed/yourVideoId" formControlName="videoUrl"  required>
             <mat-error *ngIf="formControls.videoUrl.invalid">{{getErrorMessage()}}</mat-error>
           </mat-form-field>
-
-          <mat-form-field class="example-chip-list">
+        </div>
+        <div class="form-group">
+          <mat-form-field class="example-chip-list" style="width: 100%;">
             <mat-chip-list #chipList aria-label="Fruit selection">
               <mat-chip *ngFor="let fruit of vegetables" [selectable]="true"
                        [removable]="true" (removed)="remove(fruit)">
@@ -26,34 +27,10 @@
                      (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
           </mat-form-field>
-        <!-- <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-           
-            <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
-            (cdkDropListDropped)="drop($event)">
-            <mat-chip class="example-box" cdkDrag *ngFor="let vegetable of vegetables">
-                {{vegetable.name}}
-            </mat-chip>
-        </mat-chip-list>
-
-        </div> -->
-       
-        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-        <!-- <mat-form-field color="accent"> -->
-
-
-        <!-- <mat-error *ngIf="formControl.videoUrl.touched &&formControl.videoUrl.errors?.passwordMismatch">">{{getErrorMessage()}}</mat-error> -->
-        <!-- </mat-form-field> -->
-
-
-
-      
-
-
+        </div>
         <div mat-dialog-actions>
             <button mat-button [type]="submit"  [mat-dialog-close]="1"
                 (click)="confirmAdd()">Save</button>
             <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
         </div>
     </form>
-</div>
