@@ -22,7 +22,7 @@ import { MessageService } from 'primeng/api';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { AddDialogComponent } from './dialog/add-dialog/add-dialog.component';
+
 
 @NgModule({
   imports: [
@@ -40,7 +40,7 @@ import { AddDialogComponent } from './dialog/add-dialog/add-dialog.component';
    
     ToastrModule.forRoot()
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, LoginComponent, SigninComponent, AddDialogComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, LoginComponent, SigninComponent],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent]
 })

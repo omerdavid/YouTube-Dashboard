@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
@@ -24,13 +24,15 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
-
+import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
+import {MatChipsModule} from '@angular/material/chips';
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
-   
+    ReactiveFormsModule,
+    MatFormFieldModule,
     HttpClientModule,
     NgbModule,
     MatTableModule,
@@ -42,7 +44,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
     MatPaginatorModule,
     MatSortModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   declarations: [
     DashboardComponent,
@@ -52,7 +55,12 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
+    AddDialogComponent
     // RtlComponent
-  ]
+  ],
+  entryComponents: [
+    AddDialogComponent,
+  
+  ],
 })
 export class AdminLayoutModule {}
