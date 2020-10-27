@@ -15,21 +15,21 @@
         <div class="form-group" >
           <mat-form-field class="example-chip-list" style="width: 100%;">
             <mat-chip-list #chipList aria-label="KeyWords selection">
-              <mat-chip *ngFor="let keyWord of matChipService.data" [selectable]="true" 
-                       [removable]="true" (removed)="matChipService.remove(keyWord)">
+              <mat-chip *ngFor="let keyWord of data.keyWords" [selectable]="true" 
+                       [removable]="true" (removed)="remove(keyWord)">
                 {{keyWord.name}}
                 <mat-icon matChipRemove >cancel</mat-icon>
               </mat-chip>
               <input placeholder="New KeyWord..." formControlName="keyWords"
                      [matChipInputFor]="chipList"
-                     [matChipInputSeparatorKeyCodes]="matChipService.separatorKeysCodes"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                      [matChipInputAddOnBlur]="true"
-                     (matChipInputTokenEnd)="matChipService.add($event)">
+                     (matChipInputTokenEnd)="addKeyWord($event)">
             </mat-chip-list>
           </mat-form-field>
         </div>
         <div mat-dialog-actions>
-            <button #save mat-button [type]="submit"  [mat-dialog-close]="1"
+            <button mat-button [type]="submit"  [mat-dialog-close]="1"
                 (click)="confirmAdd()">Save</button>
             <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
         </div>

@@ -8,7 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { sortBy } from 'lodash';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
 import { KeyWordData, UserVideos } from './models/youTube-results';
 
@@ -64,6 +64,8 @@ openAddDialog() {
     data: {issue: {} }
   });
 
+  dialogRef.componentInstance.onSubmit$.pipe(tap(console.log),filter(d=>!!d)).subscribe((formValue)=>this.addVideo(formValue));
+
   dialogRef.afterClosed().subscribe(result => {
     if (result === 1) {
       // After dialog is closed we're doing frontend updates
@@ -73,10 +75,12 @@ openAddDialog() {
     }
   });
 }
-addVideo(){
 
+addVideo(newVideo){
 
-  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:'yUi3qOLuS4E',keyWords:['ויטמיקס','בלנדר מקצועי']})
+console.log('newVideo :',newVideo);
+return;
+  this.httpClient.post(`api/youTubeList/addVideo`,{videoId:newVideo.videoId,keyWords:newVideo.keyWords})
   .subscribe(res=>{
     console.log(res);
   })
