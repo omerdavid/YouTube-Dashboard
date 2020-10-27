@@ -31,9 +31,10 @@ const youTubeService = {
     addVideo: async (videoId, keyWords, userId, rank, dateChecked) => {
         try {
             const newAddedVideos = [];
-            for (const keyWord of keyWords) {
+            
+            for (let keyWord of keyWords) {
 
-                let newVideo = await videoModel.addVideo(videoId, keyWord, userId, rank, dateChecked);
+                let newVideo = await videoModel.addVideo(videoId, keyWord.name, userId, rank, dateChecked);
                 newAddedVideos.push(newVideo);
 
             }

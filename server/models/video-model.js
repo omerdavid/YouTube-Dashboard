@@ -3,7 +3,7 @@ const dbConfig = require('../config/db');
 const logger = require('../services/log-handler');
 const mongooseService = require('../services/mongooseService.js')
 
-let Video = mongoose.model('Video', {
+let Video = mongoose.model('Video', new mongoose.Schema({
 
     videoId: String,
     userId: String,
@@ -12,27 +12,29 @@ let Video = mongoose.model('Video', {
     keyWord: String
 
 
-});
+}));
 
 let videoModel = {
     addVideo: async (videoId, keyWord, userId, rank, dateChecked) => {
         try {
 
             const col = await mongooseService.collection('videos');
-
+            let x = await Video.findOne({ videoId: videoId, keyWord: keyWord });
+            console.log(x);
             let _video = await col.findOne({ videoId: videoId, keyWord: keyWord });
 
-            if (!_video) {
-                console.log('new  _video :', _video);
-                _video = new Video();
-                _video.videoId = videoId;
-                _video.userId = userId;
-                _video.dateChecked = dateChecked;
-                _video.keyWord = keyWord;
-                _video.rank = rank;
+            if (!_video || _video.length == 0) {
 
-                let response = await col.insertOne(_video);
+                const newVideo = {
+                    videoId: videoId,
+                    userId: userId,
+                    dateChecked: dateChecked,
+                    keyWord: keyWord,
+                    rank: rank
+                };
 
+                let response = await col.insertOne(newVideo);
+                console.log('new  _video :', response.ops[0]);
                 return response.ops[0];
             }
             else {
@@ -50,9 +52,9 @@ let videoModel = {
 
         try {
             const videoCol = await mongooseService.collection('videos');
-           
+
             for (let v of userVideos) {
-                videoCol.updateOne({ _id: v._id }, {$set:{ rank: v.rank ,dateChecked: v.dateChecked }});
+                videoCol.updateOne({ _id: v._id }, { $set: { rank: v.rank, dateChecked: v.dateChecked } });
             }
         } catch (err) {
             logger.debug(err);
