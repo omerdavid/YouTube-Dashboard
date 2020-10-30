@@ -1,5 +1,5 @@
 
-
+const logger = require('../services/log-handler');
 var mongoose = require('mongoose');
 const mongooseService = require('../services/mongooseService.js')
 
@@ -20,7 +20,7 @@ let configModel = {
          return res;
       }
       catch (ex) {
-         console.log(ex);
+         logger.log(ex);
       } finally {
         // mongo.close();
 

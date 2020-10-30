@@ -20,7 +20,7 @@ let videoModel = {
 
             const col = await mongooseService.collection('videos');
             let x = await Video.findOne({ videoId: videoId, keyWord: keyWord });
-            console.log(x);
+           
             let _video = await col.findOne({ videoId: videoId, keyWord: keyWord });
 
             if (!_video || _video.length == 0) {
@@ -34,16 +34,19 @@ let videoModel = {
                 };
 
                 let response = await col.insertOne(newVideo);
-                console.log('new  _video :', response.ops[0]);
+
+                logger.debug('new  _video :', response.ops[0]);
+                
+                
                 return response.ops[0];
             }
             else {
-                // console.log('els video already exist:', _video);
+              
                 return _video;
 
             }
         } catch (err) {
-
+          logger.log();
             logger.debug(err);
             throw err;
         }

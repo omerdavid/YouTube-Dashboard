@@ -6,9 +6,9 @@ const logger=require('../services/log-handler');
 router.route('/').get(async (req, res) => {
 
  try {
-  
    
     let user = req.user;
+   
     let userVideos = await youTubeService.getUserVideos(user.id);
     
     let userVideo=  youTubeService.createDto(userVideos);

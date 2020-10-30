@@ -52,7 +52,7 @@ const youTubeService = {
             let videosArr = await youTubeService.search(video.keyWord);
             let rank = videosArr.findIndex(x => x.id.videoId == video.videoId);
             video.rank = rank + 1;
-            video.dateChecked = moment().format('DD/MM/yyyy');;
+            video.dateChecked = moment().format('DD/MM/yyyy');
         }
         return videosPerKeyWord;
     },

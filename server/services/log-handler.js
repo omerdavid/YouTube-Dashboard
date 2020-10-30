@@ -4,7 +4,7 @@ const logger ={
      
     },
     debug:(msg)=>{
-      console.log(msg);
+      console.log('log :',msg);
     }
 } //require('pino')()
  

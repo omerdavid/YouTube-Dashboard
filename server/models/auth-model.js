@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 const dbConfig = require('../config/db');
 var bcrypt = require('bcrypt');
+const logger = require('../services/log-handler');
 
 let User= mongoose.model('User',{
         username: String,
@@ -25,7 +26,7 @@ let authModel = {
    .then((_user)=>{
   
    if(!_user){
-    console.log('new  user :',_user);
+  
      _user=new User();
      _user.username=username;
      _user.password=password;
@@ -35,12 +36,13 @@ let authModel = {
            cb(null,response.ops[0]);
       
        }).catch(err=>{
-        console.log('err :',err)
+        logger.log('auth-model :',err);
+        logger.debug('auth-model :',err);
            cb(err,null)
         });
    }
    else{
-    console.log('els :',_user);
+    
     cb({statusCode:409},null);
    }
  

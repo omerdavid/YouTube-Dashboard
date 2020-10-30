@@ -4,6 +4,7 @@ const dbConfig = require('../config/db');
 let mongooseService={
     
      connect:async ()=>{
+       
         await mongoose.connect(dbConfig.url+dbConfig.DB,{ useNewUrlParser: true,useUnifiedTopology:true });
     },
     collection:async (colName)=>{

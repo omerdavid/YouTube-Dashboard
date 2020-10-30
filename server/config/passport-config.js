@@ -2,7 +2,8 @@ var passport = require('passport');
 var {Strategy} = require('passport-local');
 var bcrypt = require('bcrypt');
 
-const {authModel}=require('../models/auth-model')
+const {authModel}=require('../models/auth-model');
+const logger = require('../services/log-handler');
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 
@@ -33,7 +34,7 @@ passport.use(new Strategy(
         passwordField: 'password'
     },
     function(username, password, done) {
-        console.log('inside Strategy');
+        logger.debug('inside Strategy');
   authModel.findOne(username,function(err,user){
     
        if (!user||user.length === 0) {
@@ -63,7 +64,7 @@ passport.use(new Strategy(
 
 passport.use(new JwtStrategy(options, function(jwtPayload, done) {
     authModel.findById(jwtPayload.sub, function(err, result) {
-        console.log('inside JwtStrategy');
+        logger.debug('inside JwtStrategy');
         if (err) {
             return done(err, false);
         }
