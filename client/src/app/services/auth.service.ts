@@ -27,7 +27,7 @@ export class AuthService {
   }
   public logout(){
    const token= localStorage.getItem('currentuser');
-   console.log('token :',token);
+  
     localStorage.removeItem('currentUser');
 
     return  this.http.get(`api/authenticate/logout?token=${token}`);

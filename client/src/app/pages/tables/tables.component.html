@@ -40,8 +40,8 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Rank </th>
           <td mat-cell *matCellDef="let element">
             <div *ngIf='currentKeyWord'>
-              <p style="color: black;">Rank: {{currentKeyWord.rank}}</p>
-              <p style="color: black;">Last date checked : {{currentKeyWord.dateChecked}}</p>
+              <p style="color: black;">Rank: {{element.lastChecked.rank}}</p>
+              <p style="color: black;">Last date checked : {{element.lastChecked.dateChecked}}</p>
             </div>
           </td>
         </ng-container>

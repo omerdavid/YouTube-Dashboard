@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -25,7 +25,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  
+  @Output() onKeyWordSelected: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<UserVideos>;
   selectedProducts: UserVideos[];
@@ -51,7 +52,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
   }
 
   keyWordClick(keyWord) {
-    this.currentKeyWord = this.getLastDateChecked(keyWord.data);
+    this.onKeyWordSelected.emit(keyWord);
+    //this.currentKeyWord = this.getLastDateChecked(keyWord.data);
   }
 
   getLastDateChecked(data): KeyWordData {

@@ -14,9 +14,26 @@ export class DashboardComponent implements OnInit {
   public clicked: boolean = true;
   public clicked1: boolean = false;
   public clicked2: boolean = false;
+  keyWordBarChart:Chart;
+   public keyWordName:string;
+   public  keyWordsDateChecked:string[]=[];
+   public keyWordsRank:string[]=[];
 
   constructor() {}
+  onKeyWordSelected(event){
 
+    this.keyWordName=event.name;
+    this.keyWordsDateChecked=event.data.map(d=>d.dateChecked);
+    this.keyWordsRank=event.data.map(d=>d.rank);
+
+    this.keyWordBarChart.data.labels=this.keyWordsDateChecked;
+    this.keyWordBarChart.data.datasets[0].data =[...this.keyWordsRank];
+
+    this.keyWordBarChart.update();
+   // console.log( this.keyWordBarChart.data);
+   
+   // console.log(event);
+  }
   ngOnInit() {
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
@@ -285,8 +302,8 @@ export class DashboardComponent implements OnInit {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 120,
+            suggestedMin: 0,
+            suggestedMax: 20,
             padding: 20,
             fontColor: "#9e9e9e"
           }
@@ -439,16 +456,16 @@ export class DashboardComponent implements OnInit {
     gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
 
 
-    var myChart = new Chart(this.ctx, {
+    this.keyWordBarChart = new Chart(this.ctx, {
       type: 'bar',
       responsive: true,
       legend: {
         display: false
       },
       data: {
-        labels: ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
+        labels:this.keyWordsDateChecked,// ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
         datasets: [{
-          label: "Countries",
+          label: "Rank",
           fill: true,
           backgroundColor: gradientStroke,
           hoverBackgroundColor: gradientStroke,
@@ -456,7 +473,7 @@ export class DashboardComponent implements OnInit {
           borderWidth: 2,
           borderDash: [],
           borderDashOffset: 0.0,
-          data: [53, 20, 10, 80, 100, 45],
+          data:this.keyWordsRank,
         }]
       },
       options: gradientBarChartConfiguration
@@ -464,6 +481,7 @@ export class DashboardComponent implements OnInit {
 
   }
   public updateOptions() {
+    
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.update();
   }

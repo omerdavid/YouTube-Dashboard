@@ -6,7 +6,7 @@ const logger = require('./log-handler');
 
 const moment = require('moment');
 
-const { groupBy, map } = require('lodash');
+const { groupBy } = require('lodash');
 
 
 const youTubeService = {
