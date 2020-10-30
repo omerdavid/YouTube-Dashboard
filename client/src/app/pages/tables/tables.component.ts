@@ -28,6 +28,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
   
   @Output() onKeyWordSelected: EventEmitter<any> = new EventEmitter();
 
+  @Output() onVideoLoaded: EventEmitter<any> = new EventEmitter();
+
   dataSource: MatTableDataSource<UserVideos>;
   selectedProducts: UserVideos[];
   product: UserVideos;
@@ -36,7 +38,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
   dataSourceultsLength = 0;
   isLoading = true;
   currentKeyWord: KeyWordData;
-
+  selectedRowIndex:number=0;
   youTubeUrl: string = 'https://www.youtube.com/embed/';
 
   constructor(private httpClient: HttpClient,
@@ -79,14 +81,19 @@ export class TablesComponent implements OnInit, AfterViewInit {
       //}
     });
   }
-
-
+  
+  highlight(element: any) {
+    element.highlighted = !element.highlighted;
+  }
 
   ngOnInit() {
     this.loadVideos();
 
   }
-
+  rowSelected(row){
+    this.selectedRowIndex=row.videoId;
+    console.log(row);
+  }
   loadVideos() {
 
     //let keyword='ויטמיקס';
@@ -102,7 +109,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
             tmp.videoId = g.videoId;
             tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl + g.videoId);
             tmp.keyWords = g.keyWords;
-         
+          
             return tmp;
 
 

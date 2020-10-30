@@ -7,12 +7,12 @@ export class UserVideos{
     title:string;
     channelTitle:string;
     description:string;
-  
+    
 }
 export class KeyWord{
     name:string
   data:KeyWordData[]
-    
+ 
 }
 export class KeyWordData{
     dateChecked:Date;
