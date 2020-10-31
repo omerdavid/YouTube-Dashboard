@@ -28,7 +28,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
   
   @Output() onKeyWordSelected: EventEmitter<any> = new EventEmitter();
 
-  @Output() onVideoLoaded: EventEmitter<any> = new EventEmitter();
+  @Output() onRowSelected: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<UserVideos>;
   selectedProducts: UserVideos[];
@@ -45,7 +45,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService, private _sanitizer: DomSanitizer, public dialogService: MatDialog) { }
   ngAfterViewInit(): void {
-
+  
   }
 
   errorHandler(error: HttpErrorResponse) {
@@ -92,7 +92,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
   }
   rowSelected(row){
     this.selectedRowIndex=row.videoId;
-    console.log(row);
+    this.onRowSelected.emit(row);
+   
   }
   loadVideos() {
 
@@ -128,6 +129,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
         this.dataSource = new MatTableDataSource(data);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        //load first element to charts
+        this.onRowSelected.emit(data[0]);
 
       });
   }

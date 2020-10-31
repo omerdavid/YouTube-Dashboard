@@ -8,13 +8,16 @@ const moment = require('moment');
 
 const { groupBy } = require('lodash');
 
-
 const youTubeService = {
 
     search: async (keyWord) => {
         try {
-            let apiUrl = await configModel.findKey({ key: 'youTubeUrl' });
-            let apiKey = await configModel.findKey({ key: 'googleApiKey' });
+            let apiUrl = await configModel.findKey({
+                key: 'youTubeUrl'
+            });
+            let apiKey = await configModel.findKey({
+                key: 'googleApiKey'
+            });
 
 
             apiUrl.value += `&q=${keyWord}&key=${apiKey.value}`;
@@ -26,12 +29,14 @@ const youTubeService = {
                 url: _url.toString()
             });
             return res.data.items;
-        } catch (err) { logger.debug(err); }
+        } catch (err) {
+            logger.debug(err);
+        }
     },
     addVideo: async (videoId, keyWords, userId, rank, dateChecked) => {
         try {
             const newAddedVideos = [];
-            
+
             for (let keyWord of keyWords) {
 
                 let newVideo = await videoModel.addVideo(videoId, keyWord.name, userId, rank, dateChecked);
@@ -40,7 +45,9 @@ const youTubeService = {
             }
             return newAddedVideos;
 
-        } catch (err) { logger.debug(err); }
+        } catch (err) {
+            logger.debug(err);
+        }
     },
     updateVideos: async (userVideos) => {
         await videoModel.updateVideos(userVideos);
@@ -62,7 +69,9 @@ const youTubeService = {
 
             return userVideos;
 
-        } catch (err) { logger.debug(err); }
+        } catch (err) {
+            logger.debug(err);
+        }
     },
     createDto: (userVideo) => {
         const gr = groupBy(userVideo, 'videoId');
@@ -72,16 +81,22 @@ const youTubeService = {
             const newObj = {};
             newObj.videoId = g;
             const keyWords = groupBy(gr[g], 'keyWord');
-            let videsoKeyWords=[];
-            for (let k in keyWords){
-                
-            let x=keyWords[k].map(kw => {
+            let videsoKeyWords = [];
+            for (let k in keyWords) {
 
-                    return  { dateChecked: kw.dateChecked, rank: kw.rank };
+                let x = keyWords[k].map(kw => {
+
+                    return {
+                        dateChecked: kw.dateChecked,
+                        rank: kw.rank
+                    };
                 });
-                videsoKeyWords.push({name :k,data:x});
+                videsoKeyWords.push({
+                    name: k,
+                    data: x
+                });
             }
-            newObj.keyWords=videsoKeyWords;
+            newObj.keyWords = videsoKeyWords;
             arr.push(newObj);
 
 
