@@ -49,7 +49,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
   }
 
   errorHandler(error: HttpErrorResponse) {
-    console.log(error.error);
+    
     return throwError(error.message || "server error.");
   }
 
@@ -67,8 +67,6 @@ export class TablesComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialogService.open(AddDialogComponent, {
       data: { issue: {} }
     });
-
-    // dialogRef.componentInstance.onNewVideoAdded$.pipe(tap(console.log),filter(d=>!!d)).subscribe((formValue)=>this.addVideo(formValue));
 
     dialogRef.afterClosed().subscribe(result => {
     // if (result === 1) {
@@ -110,7 +108,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
             tmp.videoId = g.videoId;
             tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl + g.videoId);
             tmp.keyWords = g.keyWords;
-          
+            tmp.videoName=g.videoName;
             return tmp;
 
 
@@ -119,7 +117,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         }
         )
         , catchError(this.errorHandler))
-      .subscribe((data: any) => {
+      .subscribe((data: UserVideos[]) => {
 
        
         // Flip flag to show that loading has finished.
@@ -131,6 +129,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         this.dataSource.sort = this.sort;
         //load first element to charts
         this.onRowSelected.emit(data[0]);
+        this.onKeyWordSelected.emit(data[0].keyWords[0])
 
       });
   }

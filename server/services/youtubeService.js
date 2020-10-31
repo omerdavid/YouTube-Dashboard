@@ -33,13 +33,13 @@ const youTubeService = {
             logger.debug(err);
         }
     },
-    addVideo: async (videoId, keyWords, userId, rank, dateChecked) => {
+    addVideo: async (videoId, videoName,keyWords, userId, rank, dateChecked) => {
         try {
             const newAddedVideos = [];
 
             for (let keyWord of keyWords) {
 
-                let newVideo = await videoModel.addVideo(videoId, keyWord.name, userId, rank, dateChecked);
+                let newVideo = await videoModel.addVideo(videoId,videoName, keyWord.name, userId, rank, dateChecked);
                 newAddedVideos.push(newVideo);
 
             }
@@ -76,10 +76,11 @@ const youTubeService = {
     createDto: (userVideo) => {
         const gr = groupBy(userVideo, 'videoId');
         let arr = [];
-
+    
         for (let g in gr) {
             const newObj = {};
             newObj.videoId = g;
+           newObj.videoName=gr[g][0].videoName;
             const keyWords = groupBy(gr[g], 'keyWord');
             let videsoKeyWords = [];
             for (let k in keyWords) {

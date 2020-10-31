@@ -18,13 +18,13 @@ export class DashboardComponent implements OnInit {
   keyWordBarChart: Chart;
   keyWordLineChart:Chart;
   public keyWordName: string;
-  public keyWordsDateChecked: string[] = [];
   public keyWordsRank: string[] = [];
   gradientChartOptionsConfigurationWithTooltipRed: any;
   gradientChartOptionsConfigurationWithTooltipGreen: any;
   gradientBarChartConfiguration: any;
   chartMonthLabels: string[];
   selectedRow: UserVideos;
+
   constructor() {
 
     this.chartMonthLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -34,24 +34,25 @@ export class DashboardComponent implements OnInit {
   onKeyWordSelected(event) {
 
     this.keyWordName = event.name;
-    this.keyWordsDateChecked = event.data.map(d => d.dateChecked);
+   
+   
     this.keyWordsRank = event.data.map(d => d.rank);
-
+   this.keyWordLineChart.data.labels=event.data.map(d =>d.dateChecked);
     this.keyWordLineChart.data.datasets[0].data = [... this.keyWordsRank];
 
     this.keyWordLineChart.update();
   }
   onRowSelection(row: UserVideos) {
     this.selectedRow = row;
-
+  
     this.keyWordBarChart.data.labels = row.keyWords.map(k => k.name);
     
     const values = row.keyWords.map(k => {
            let lastCheck=this.getLastDateChecked(k.data);
-           console.log(lastCheck);
+          
            return lastCheck.rank;
     });
-    console.log(values);
+   
     this.keyWordBarChart.data.datasets[0].data = [...values];
 
     this.keyWordBarChart.update();
@@ -364,9 +365,9 @@ export class DashboardComponent implements OnInit {
     gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
 
     var data = {
-      labels: this.chartMonthLabels.slice(6),
+      labels: [],//this.chartMonthLabels.slice(6),
       datasets: [{
-        label: "Data",
+        label: "Rank",
         fill: true,
         backgroundColor: gradientStroke,
         borderColor: '#ec250d',

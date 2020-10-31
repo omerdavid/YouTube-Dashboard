@@ -6,6 +6,7 @@ const mongooseService = require('../services/mongooseService.js')
 let Video = mongoose.model('Video', new mongoose.Schema({
 
     videoId: String,
+    videoName:String,
     userId: String,
     dateChecked: String,
     rank: String,
@@ -15,12 +16,12 @@ let Video = mongoose.model('Video', new mongoose.Schema({
 }));
 
 let videoModel = {
-    addVideo: async (videoId, keyWord, userId, rank, dateChecked) => {
+    addVideo: async (videoId, videoName,keyWord, userId, rank, dateChecked) => {
         try {
 
             const col = await mongooseService.collection('videos');
             let x = await Video.findOne({ videoId: videoId, keyWord: keyWord });
-           
+            logger.debug(x);
             let _video = await col.findOne({ videoId: videoId, keyWord: keyWord });
 
             if (!_video || _video.length == 0) {
@@ -28,6 +29,7 @@ let videoModel = {
                 const newVideo = {
                     videoId: videoId,
                     userId: userId,
+                    videoName:videoName,
                     dateChecked: dateChecked,
                     keyWord: keyWord,
                     rank: rank

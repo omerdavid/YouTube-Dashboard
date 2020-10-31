@@ -1,4 +1,4 @@
-<div class=" content">
+<div id="dash-board-video-charts" class=" content" style="min-height: calc(60vh - 70px) !important;">
   <!-- <div class=" row">
     <div class=" col-12">
       <div class=" card card-chart">
@@ -60,9 +60,9 @@
     <div class=" col-lg-4">
       <div class=" card card-chart">
         <div class=" card-header">
-          <h5 class=" card-category">Total Shipments</h5>
+          <h5 class=" card-category">KeyWord</h5>
           <h3 class=" card-title">
-            <i class=" tim-icons icon-bell-55 text-danger-states"> </i> 763,215
+            <i class=" tim-icons icon-bell-55 text-danger-states"> </i> {{keyWordName}}
           </h3>
         </div>
         <div class=" card-body">
@@ -73,9 +73,9 @@
     <div class=" col-lg-4">
       <div class=" card card-chart">
         <div class=" card-header">
-          <h5 class=" card-category">KeyWord</h5>
-          <h3 class=" card-title">
-            <i class=" tim-icons icon-delivery-fast text-info"> </i>{{keyWordName}}
+          <h5 class=" card-category">Video</h5>
+          <h3 class=" card-title" *ngIf='selectedRow'>
+            <i class=" tim-icons icon-delivery-fast text-info"> </i>{{selectedRow.videoName}}
           </h3>
         </div>
         <div class=" card-body">

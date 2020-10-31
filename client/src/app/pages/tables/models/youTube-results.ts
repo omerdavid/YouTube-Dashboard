@@ -2,6 +2,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 export class UserVideos{
     videoId:string;
+    videoName:string;
     videoUrl:string|SafeResourceUrl;
     keyWords:KeyWord[]
     title:string;
