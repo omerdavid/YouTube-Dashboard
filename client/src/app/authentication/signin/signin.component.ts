@@ -38,7 +38,7 @@ signIn(){
 
 this.authService.signIn(userName,password)
 .subscribe((res)=>{
-  console.log(res);
+ 
      if(!!res.data){
        localStorage.setItem('token',res.data.token);
      this.router.navigate(['dashboard']);

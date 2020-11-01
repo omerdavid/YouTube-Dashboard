@@ -39,7 +39,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
   isLoading = true;
   currentKeyWord: KeyWordData;
   selectedRowIndex:number=0;
-  youTubeUrl: string = 'https://www.youtube.com/embed/';
+  youTubeEmbedUrl: string = 'https://www.youtube.com/embed/';
 
   constructor(private httpClient: HttpClient,
     private messageService: MessageService,
@@ -106,7 +106,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
 
             let tmp = new UserVideos();
             tmp.videoId = g.videoId;
-            tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeUrl + g.videoId);
+            tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeEmbedUrl + g.videoId);
             tmp.keyWords = g.keyWords;
             tmp.videoName=g.videoName;
             return tmp;
@@ -119,7 +119,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         , catchError(this.errorHandler))
       .subscribe((data: UserVideos[]) => {
 
-       
+             console.log(data);
         // Flip flag to show that loading has finished.
         this.isLoading = false;
 

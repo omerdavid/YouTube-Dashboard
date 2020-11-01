@@ -3,7 +3,16 @@
 
     <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"  (ngSubmit)="submit"  [formGroup]="dialogForm">
       
-        <div class="form-group">
+      <div class="form-group">
+
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Enter Video Name</mat-label>
+           
+            <input matInput  formControlName="videoName"  required>
+            <mat-error *ngIf="formControls.videoName.invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </div>
+      <div class="form-group">
 
         <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Enter Video Url</mat-label>
@@ -25,11 +34,12 @@
                      [matChipInputSeparatorKeyCodes]="matChipService.separatorKeysCodes"
                      [matChipInputAddOnBlur]="true"
                      (matChipInputTokenEnd)="matChipService.add($event)">
+                     <mat-error *ngIf="formControls.keyWords.invalid">{{getErrorMessage()}}</mat-error>
             </mat-chip-list>
           </mat-form-field>
         </div>
         <div mat-dialog-actions>
-            <button #save mat-button [type]="submit"  [mat-dialog-close]="1"
+            <button #save mat-button [type]="submit" [disabled]="!dialogForm.valid"  [mat-dialog-close]="1"
                 (click)="confirmAdd()">Save</button>
             <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
         </div>

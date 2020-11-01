@@ -38,7 +38,6 @@ loginUser(){
 this.authService.authenticate(userName,password)
 .subscribe((data)=>{
 
-          console.log(data.data);
      if(!!data.data){
     
        localStorage.setItem('currentuser',data.data.token);

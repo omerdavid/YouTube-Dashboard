@@ -20,10 +20,10 @@ let videoModel = {
         try {
 
             const col = await mongooseService.collection('videos');
-            let x = await Video.findOne({ videoId: videoId, keyWord: keyWord });
-            logger.debug(x);
+         //   let x = await Video.findOne({ videoId: videoId, keyWord: keyWord });
+           
             let _video = await col.findOne({ videoId: videoId, keyWord: keyWord });
-
+            
             if (!_video || _video.length == 0) {
 
                 const newVideo = {

@@ -1,14 +1,11 @@
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserVideos } from 'src/app/pages/tables/models/youTube-results';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatChipService } from 'src/app/services/mat-chip.service';
-import { BehaviorSubject, EmptyError, fromEvent, Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { UserVideos } from 'src/app/pages/tables/models/youTube-results';
+import { MatChipService } from 'src/app/services/mat-chip.service';
 
 @Component({
   selector: 'app-add.dialog',
@@ -19,10 +16,11 @@ import { catchError } from 'rxjs/operators';
 
 export class AddDialogComponent implements OnInit {
 
-  videoUrlForm = new FormControl('', [Validators.required]);
+  videoUrlForm = new FormControl('', [Validators.required, this.isValidYoutubeUrl]);
   keyWordsForm = new FormControl('', [Validators.required]);
+  videoName=new FormControl('', [Validators.required]);
 
-  errMsg:string;
+  errMsg: string;
   dialogForm: FormGroup;
 
   get formControls() { return this.dialogForm.controls; }
@@ -36,40 +34,94 @@ export class AddDialogComponent implements OnInit {
 
     this.dialogForm = this.fb.group({
       videoUrl: this.videoUrlForm,
-      keyWords: this.keyWordsForm
-    });
+      keyWords: this.keyWordsForm,
+      videoName:this.videoName
+    },
+    {
+      validator: (formGroup: FormGroup) => {
+        return this.validateGroup(formGroup);
+      }
+  }
+    );
+    
+  }
+  private validateGroup(formGroup: FormGroup) {
+
+    for (let key in formGroup.controls) {
+      if (formGroup.controls.hasOwnProperty(key)) {
+        let control: FormControl = <FormControl>formGroup.controls[key];
+        if (control.value) {
+          return null;
+        }
+      }
+    }
+    return {
+      validateGroup: {
+        valid: false
+      }
+    };
+  }
+  isValidYoutubeUrl(control: AbstractControl): ValidationErrors | null {
+    if (!control.value)
+      return;
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = control.value.match(regExp);
+
+    // console.log(match[7]);
+    return (match && match[7].length == 11) ? null : { videoUrl: 'is not valid' };
+
 
   }
 
+  // youtube_parser(url: string) {
+  //   if (!url)
+  //     return;
+  //   var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  //   var match = url.match(regExp);
+  //   return (match && match[7].length == 11) ? match[7] : false;
+  // }
+
+  getVideoIdFromUrl(url): string {
+
+    let _url = new URL('', url);
+    if (_url.searchParams.has('v')) {
+
+      const videoId = _url.searchParams.get('v');
+      return videoId;
+    }
+  }
 
   getErrorMessage() {
 
     return this.videoUrlForm.hasError('required') ? 'Required field' :
-      this.videoUrlForm.hasError('email') ? 'Not a valid email' :
+    //  this.videoUrlForm.hasError('videoName') ? 'Not a valid email' :
+      this.videoUrlForm.hasError('videoUrl') ? 'Not a valid url' :
         '';
   }
 
   submit() {
 
-    const data = { videoUrl: this.dialogForm.controls.videoUrl.value, keyWords: this.matChipService.data };
+    const _videoId=this.getVideoIdFromUrl(this.dialogForm.controls.videoUrl.value);
+    const data = { videoId:_videoId ,videoName:this.formControls.videoName.value, keyWords: this.matChipService.data };
     //go to server
-    this.addVideo(data);
+     this.addVideo(data);
 
 
   }
   errorHandler(error: HttpErrorResponse) {
+
     console.log(error.error);
     setTimeout(() => {
       this.dialogRef.close();
-     this.errMsg='server error . Details: ' + error;
+      this.errMsg = 'server error . Details: ' + error;
     }, 2000)
 
     return throwError(error.message || "server error.");
   }
   addVideo(newVideo) {
-const testVideoId='ILooaM258IA';
-       
-    this._http.post(`api/youTubeList/addVideo`, { videoId: testVideoId, keyWords: newVideo.keyWords })
+    const testVideoId = 'ILooaM258IA';
+
+    this._http.post(`api/youTubeList/addVideo`, { videoId: newVideo.videoId,videoName:newVideo.videoName ,keyWords: newVideo.keyWords })
       .pipe(
 
         catchError(this.errorHandler)
@@ -77,9 +129,7 @@ const testVideoId='ILooaM258IA';
       .subscribe(res => {
 
         this.dialogRef.close();
-       // this.onNewVideoAdded$.next(res);
-
-        console.log(res);
+        
       })
   }
   onNoClick(): void {

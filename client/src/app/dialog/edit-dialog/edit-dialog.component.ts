@@ -3,11 +3,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserVideos } from 'src/app/pages/tables/models/youTube-results';
+import { MatChipService } from 'src/app/services/mat-chip.service';
 
 
 @Component({
   templateUrl: './edit-dialog.component.html',
-  styleUrls: ['./edit-dialog.component.scss']
+  styleUrls: ['./edit-dialog.component.scss'],
+  providers: [MatChipService]
 })
 export class EditDialogComponent implements OnInit {
 

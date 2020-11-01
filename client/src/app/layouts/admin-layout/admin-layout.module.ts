@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
 import {MatChipsModule} from '@angular/material/chips';
+import { EditDialogComponent } from 'src/app/dialog/edit-dialog/edit-dialog.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -55,12 +56,13 @@ import {MatChipsModule} from '@angular/material/chips';
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
-    AddDialogComponent
+    AddDialogComponent,
+    EditDialogComponent
     // RtlComponent
   ],
   entryComponents: [
     AddDialogComponent,
-  
+    EditDialogComponent
   ],
 })
 export class AdminLayoutModule {}

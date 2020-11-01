@@ -19,7 +19,6 @@ const youTubeService = {
                 key: 'googleApiKey'
             });
 
-
             apiUrl.value += `&q=${keyWord}&key=${apiKey.value}`;
             const _url = new URL(apiUrl.value);
 
@@ -58,6 +57,7 @@ const youTubeService = {
         for (let video of videosPerKeyWord) {
             let videosArr = await youTubeService.search(video.keyWord);
             let rank = videosArr.findIndex(x => x.id.videoId == video.videoId);
+            
             video.rank = rank + 1;
             video.dateChecked = moment().format('DD/MM/yyyy');
         }
