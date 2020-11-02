@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  onKeyWordSelected(event) {
+  public onKeyWordSelected(event) {
 
     this.keyWordName = event.name;
    
@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
 
     this.keyWordLineChart.update();
   }
-  onRowSelection(row: UserVideos) {
+  public onRowSelection(row: UserVideos) {
     this.selectedRow = row;
   
     this.keyWordBarChart.data.labels = row.keyWords.map(k => k.name);

@@ -22,7 +22,7 @@ import { KeyWordData, UserVideos } from './models/youTube-results';
 })
 export class TablesComponent implements OnInit, AfterViewInit {
 
-  public displayedColumns: string[] = ['videoId', 'keyWords', 'title', 'channelTitle', 'description', 'actions'];
+  public displayedColumns: string[] = ['videoId', 'keyWords', 'rank', 'actions'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

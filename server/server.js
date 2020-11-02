@@ -17,8 +17,14 @@ const passportConfig=require('./config/passport-config');
 const mongooseService = require('./services/mongooseService.js');
  
 
-mongooseService.connect();
-
+mongooseService.connect().then(()=>{
+     
+      logger.debug(null,'mongo connected');
+});
+       //Link to angular build dir
+const distDir=__dirname+"/dist/";
+app.use(express.static(distDir));
+logger.debug(__dirname,'__dirname :');
  app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(bodyParser.json());
@@ -68,9 +74,9 @@ app.use(function(req, res, next) {
     res.render('error');
   });
   
-
-app.listen(3000, () => {
+const port=process.env.PORT||3000;
+app.listen(port, () => {
  
-  logger.debug('App running  at 3000');
+  logger.debug(`App running  at ${port}`);
    
 })

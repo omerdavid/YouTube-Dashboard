@@ -12,12 +12,7 @@ router.route('/').get(async (req, res) => {
     let userVideos = await youTubeService.getUserVideos(user.id);
     
     let userVideo=  youTubeService.createDto(userVideos);
-    for(let s of userVideo){
-      for (let k of s.keyWords)
-      {
-     logger.debug(k.data,' after add new  :');  
-      }
-    }
+   
     res.status(200).json(userVideo);
  }
   catch (err) 

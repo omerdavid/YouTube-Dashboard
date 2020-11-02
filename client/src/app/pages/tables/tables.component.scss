@@ -1,8 +1,15 @@
 table {
     width: 100%;
   }
+  .mat-table {
+    overflow: auto;
+    max-height: 500px;
+  }
+  .hovered{
+    background: #eee;
+  }
 .highlight{
-  background-color: aqua !important;
+  background-color: #eee !important;
 }
 :host ::ng-deep {
     .p-paginator {
