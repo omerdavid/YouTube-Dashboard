@@ -49,7 +49,8 @@ const youTubeService = {
         }
     },
     updateVideos: async (userVideos) => {
-        await videoModel.updateVideos(userVideos);
+      let updatedVideos=  await videoModel.updateVideos(userVideos);
+      return updatedVideos;
     },
     rankVideos: async (videosPerKeyWord) => {
 
@@ -74,6 +75,7 @@ const youTubeService = {
         }
     },
     createDto: (userVideo) => {
+        
         const gr = groupBy(userVideo, 'videoId');
         let arr = [];
     
@@ -98,11 +100,13 @@ const youTubeService = {
                 });
             }
             newObj.keyWords = videsoKeyWords;
+            
+           
             arr.push(newObj);
 
 
         }
-
+ 
         return arr;
     }
 }

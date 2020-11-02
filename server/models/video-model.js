@@ -37,9 +37,6 @@ let videoModel = {
 
                 let response = await col.insertOne(newVideo);
 
-                logger.debug('new  _video :', response.ops[0]);
-                
-                
                 return response.ops[0];
             }
             else {
@@ -57,10 +54,12 @@ let videoModel = {
 
         try {
             const videoCol = await mongooseService.collection('videos');
-
+            
             for (let v of userVideos) {
-                videoCol.updateOne({ _id: v._id }, { $set: { rank: v.rank, dateChecked: v.dateChecked } });
+              
+                await videoCol.updateOne({ _id: v._id }, { $set: { rank: v.rank, dateChecked: v.dateChecked } });
             }
+            return userVideos;
         } catch (err) {
             logger.debug(err);
             logger.log(err);

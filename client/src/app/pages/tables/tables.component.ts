@@ -10,6 +10,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
+import { VideoService } from 'src/app/services/video.service';
 import { KeyWordData, UserVideos } from './models/youTube-results';
 
 
@@ -43,7 +44,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
 
   constructor(private httpClient: HttpClient,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService, private _sanitizer: DomSanitizer, public dialogService: MatDialog) { }
+    private confirmationService: ConfirmationService, private _sanitizer: DomSanitizer, public dialogService: MatDialog,private videoService:VideoService) { }
   ngAfterViewInit(): void {
   
   }
@@ -71,7 +72,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
     // if (result === 1) {
 
-        this.loadVideos();
+       
         // After dialog is closed we're doing frontend updates
         // For add we're just pushing a new row inside DataService
         // this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
@@ -85,6 +86,9 @@ export class TablesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.videoService.newVideoAdd$.subscribe((userVideo:UserVideos[])=>{
+      this.loadVideos();  
+    })
     this.loadVideos();
 
   }
@@ -103,7 +107,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         map((f: any) => {
          
           return f.map(g => {
-
+           
             let tmp = new UserVideos();
             tmp.videoId = g.videoId;
             tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeEmbedUrl + g.videoId);
@@ -119,7 +123,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         , catchError(this.errorHandler))
       .subscribe((data: UserVideos[]) => {
 
-             console.log(data);
+          
         // Flip flag to show that loading has finished.
         this.isLoading = false;
 

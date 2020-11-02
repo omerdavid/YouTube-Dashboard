@@ -6,6 +6,7 @@ import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { UserVideos } from 'src/app/pages/tables/models/youTube-results';
 import { MatChipService } from 'src/app/services/mat-chip.service';
+import { VideoService } from 'src/app/services/video.service';
 
 @Component({
   selector: 'app-add.dialog',
@@ -27,7 +28,7 @@ export class AddDialogComponent implements OnInit {
 
   public onNewVideoAdded$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(public dialogRef: MatDialogRef<AddDialogComponent>, public matChipService: MatChipService, public _http: HttpClient,
+  constructor(public dialogRef: MatDialogRef<AddDialogComponent>, public matChipService: MatChipService,private videoService:VideoService,
     @Inject(MAT_DIALOG_DATA) public data: UserVideos, private fb: FormBuilder
   ) { }
   ngOnInit(): void {
@@ -100,11 +101,14 @@ export class AddDialogComponent implements OnInit {
   }
 
   submit() {
-
+  
     const _videoId=this.getVideoIdFromUrl(this.dialogForm.controls.videoUrl.value);
     const data = { videoId:_videoId ,videoName:this.formControls.videoName.value, keyWords: this.matChipService.data };
+    console.log('is Form valid :',!!this.videoUrlForm.valid)
+    if(!!this.videoUrlForm.valid){
     //go to server
      this.addVideo(data);
+    }
 
 
   }
@@ -119,18 +123,9 @@ export class AddDialogComponent implements OnInit {
     return throwError(error.message || "server error.");
   }
   addVideo(newVideo) {
-    const testVideoId = 'ILooaM258IA';
-
-    this._http.post(`api/youTubeList/addVideo`, { videoId: newVideo.videoId,videoName:newVideo.videoName ,keyWords: newVideo.keyWords })
-      .pipe(
-
-        catchError(this.errorHandler)
-      )
-      .subscribe(res => {
-
-        this.dialogRef.close();
-        
-      })
+    const x= { videoId: newVideo.videoId,videoName:newVideo.videoName ,keyWords: newVideo.keyWords };
+    this.videoService.addVideo(newVideo);
+    this.dialogRef.close();
   }
   onNoClick(): void {
     this.dialogRef.close();
