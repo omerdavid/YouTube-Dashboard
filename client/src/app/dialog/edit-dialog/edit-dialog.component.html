@@ -1,14 +1,14 @@
-<!-- 
+
     <h3 mat-dialog-title style="color: black;">Add new Video</h3>
 
-    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"  (ngSubmit)="submit"  [formGroup]="dialogForm">
+    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"  (ngSubmit)="submit()"  [formGroup]="dialogForm">
       
         <div class="form-group">
 
         <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Enter Video Url</mat-label>
            
-            <input matInput placeholder="https://www.youtube.com/embed/yourVideoId" formControlName="videoUrl"  required>
+            <label *ngIf="data">{{data.videoUrl}}</label>
             <mat-error *ngIf="formControls.videoUrl.invalid">{{getErrorMessage()}}</mat-error>
           </mat-form-field>
         </div>
@@ -16,7 +16,7 @@
           <mat-form-field class="example-chip-list" style="width: 100%;">
             <mat-chip-list #chipList aria-label="KeyWords selection">
               <mat-chip *ngFor="let keyWord of data.keyWords" [selectable]="true" 
-                       [removable]="true" (removed)="remove(keyWord)">
+                       [removable]="true" (removed)="matChipService.remove(keyWord)">
                 {{keyWord.name}}
                 <mat-icon matChipRemove >cancel</mat-icon>
               </mat-chip>
@@ -24,13 +24,14 @@
                      [matChipInputFor]="chipList"
                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                      [matChipInputAddOnBlur]="true"
-                     (matChipInputTokenEnd)="addKeyWord($event)">
+                     (matChipInputTokenEnd)="matChipService.add($event)">
             </mat-chip-list>
           </mat-form-field>
         </div>
         <div mat-dialog-actions>
-            <button mat-button [type]="submit"  [mat-dialog-close]="1"
-                (click)="confirmAdd()">Save</button>
-            <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
-        </div>
-    </form> -->
+          <button #save mat-button [type]="submit" [disabled]="!dialogForm.valid"  [mat-dialog-close]="1"
+             >Save</button>
+          <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+      </div>
+      
+    </form>

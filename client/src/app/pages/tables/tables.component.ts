@@ -10,6 +10,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
+import { EditDialogComponent } from 'src/app/dialog/edit-dialog/edit-dialog.component';
 import { VideoService } from 'src/app/services/video.service';
 import { KeyWordData, UserVideos } from './models/youTube-results';
 
@@ -80,7 +81,14 @@ export class TablesComponent implements OnInit, AfterViewInit {
       //}
     });
   }
-  
+  openEditDialog(){
+    const dialogRef = this.dialogService.open(EditDialogComponent, {
+      data: { issue: {} }
+    });
+  }
+  deleteItem(){
+
+  }
   highlight(element: any) {
     element.highlighted = !element.highlighted;
   }
@@ -88,7 +96,10 @@ export class TablesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.videoService.newVideoAdd$.subscribe((userVideo:UserVideos[])=>{
       this.loadVideos();  
-    })
+    });
+    this.videoService.editVideo$.subscribe((userVideo:UserVideos[])=>{
+      this.loadVideos();  
+    });
     this.loadVideos();
 
   }
