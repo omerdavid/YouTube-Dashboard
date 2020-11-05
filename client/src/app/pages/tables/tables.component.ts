@@ -81,9 +81,10 @@ export class TablesComponent implements OnInit, AfterViewInit {
       //}
     });
   }
-  openEditDialog(){
+  openEditDialog(row){ 
+  
     const dialogRef = this.dialogService.open(EditDialogComponent, {
-      data: { issue: {} }
+      data:row 
     });
   }
   deleteItem(){
@@ -122,8 +123,10 @@ export class TablesComponent implements OnInit, AfterViewInit {
             let tmp = new UserVideos();
             tmp.videoId = g.videoId;
             tmp.videoUrl = this._sanitizer.bypassSecurityTrustResourceUrl(this.youTubeEmbedUrl + g.videoId);
+            tmp.videoUrlString=this.youTubeEmbedUrl + g.videoId;
             tmp.keyWords = g.keyWords;
             tmp.videoName=g.videoName;
+            console.log(tmp.videoUrl.toString());
             return tmp;
 
 

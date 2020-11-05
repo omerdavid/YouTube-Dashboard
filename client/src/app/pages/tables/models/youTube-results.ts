@@ -4,7 +4,8 @@ export class UserVideos{
     videoId:string;
     videoName:string;
     videoUrl:string|SafeResourceUrl;
-    keyWords:KeyWord[]
+    videoUrlString:string;
+    keyWords:KeyWord[];
     title:string;
     channelTitle:string;
     description:string;

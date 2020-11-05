@@ -15,61 +15,68 @@ import { VideoService } from 'src/app/services/video.service';
 export class EditDialogComponent implements OnInit {
 
 
-  videoUrlForm:FormControl;
-  keyWordsForm: FormControl; 
-  videoNameForm:FormControl;
+  videoUrlForm: FormControl;
+  keyWordsForm: FormControl;
+  videoNameForm: FormControl;
 
- dialogForm:FormGroup;
- public data: UserVideos;
-  
-get formControls(){return this.dialogForm.controls ;}
-readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  dialogForm: FormGroup;
+  public data: UserVideos;
+
+  get formControls() { return this.dialogForm.controls; }
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
 
-  constructor(public dialogRef: MatDialogRef<EditDialogComponent>,public matChipService: MatChipService,private videoService:VideoService,
-    @Inject(MAT_DIALOG_DATA) public _data: UserVideos,private fb:FormBuilder) {this.data=_data }
+  constructor(public dialogRef: MatDialogRef<EditDialogComponent>, public matChipService: MatChipService, private videoService: VideoService,
+    @Inject(MAT_DIALOG_DATA) public _data: UserVideos, private fb: FormBuilder) {
+
+      console.log('edit row data :',_data);
+      this.data = _data; 
+      
+    
+  }
 
   ngOnInit(): void {
 
-    const keyWordsNames=this.data.keyWords.map(k=>k.name);
+    const keyWordsNames = this.data.keyWords;//.map(k => k.name);
+    this.matChipService.data=keyWordsNames;
+    this.keyWordsForm = new FormControl(keyWordsNames, [Validators.required]);
+    this.videoNameForm = new FormControl(this.data.videoName, [Validators.required]);
 
-   // this.videoUrlForm=new FormControl(this.data.videoUrl, [Validators.required]);
-    this.keyWordsForm=new FormControl([...keyWordsNames], [Validators.required]);
-this.videoNameForm=new FormControl(this.data.videoName, [Validators.required]);
-
-    this.dialogForm=this.fb.group({
-    //  videoUrl: this.videoUrlForm,
-      keyWords:this.keyWordsForm,
-      videoName:this.videoNameForm
+    this.dialogForm = this.fb.group({
+      keyWords: this.keyWordsForm,
+      videoName: this.videoNameForm
     });
-  
-       this.videoUrlForm.valueChanges.subscribe(e=>{
-         console.log(e);
-       })
-        this.keyWordsForm.valueChanges.subscribe(e=>{
-        console.log(e);
-      })
-      this.videoNameForm.valueChanges.subscribe(e=>{
-        console.log(e);
-      })
+
+   
+    this.keyWordsForm.valueChanges.subscribe(e => {
+      console.log(e);
+    })
+    this.videoNameForm.valueChanges.subscribe(e => {
+      console.log(e);
+    })
   }
   getErrorMessage() {
 
     return this.videoUrlForm.hasError('required') ? 'Required field' :
-    //  this.videoUrlForm.hasError('videoName') ? 'Not a valid email' :
+      //  this.videoUrlForm.hasError('videoName') ? 'Not a valid email' :
       this.videoUrlForm.hasError('videoUrl') ? 'Not a valid url' :
         '';
   }
-  submit(){
-
+  submit() {
+  
+    console.log('is Form valid :',!!this.dialogForm.valid)
+    if(!!this.dialogForm.valid){
+    //go to server
+     this.updateVideo();
+    }
   }
-  onNoClick(){
-    
+  onNoClick(): void {
+    this.dialogRef.close();
   }
-  updateVideo(){
+  updateVideo() {
     const data =
-    this.videoService.createUserVideosObject(this.data.videoId,this.data.videoUrl.toString(),this.formControls.videoName.value,this.matChipService.data);
-
+      this.videoService.createUserVideosObject(this.data.videoId, this.data.videoUrl.toString(), this.formControls.videoName.value, this.matChipService.data);
+      console.log('update video date :',data)
     this.videoService.editVideo(data);
     this.dialogRef.close();
   }

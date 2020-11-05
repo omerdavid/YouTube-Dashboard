@@ -105,7 +105,7 @@ export class AddDialogComponent implements OnInit {
     const _videoId=this.getVideoIdFromUrl(this.dialogForm.controls.videoUrl.value);
     const data = { videoId:_videoId ,videoName:this.formControls.videoName.value, keyWords: this.matChipService.data };
     console.log('is Form valid :',!!this.videoUrlForm.valid)
-    if(!!this.videoUrlForm.valid){
+    if(!!this.dialogForm.valid){
     //go to server
      this.addVideo(data);
     }
@@ -123,7 +123,7 @@ export class AddDialogComponent implements OnInit {
     return throwError(error.message || "server error.");
   }
   addVideo(newVideo) {
-    const x= { videoId: newVideo.videoId,videoName:newVideo.videoName ,keyWords: newVideo.keyWords };
+   
     this.videoService.addVideo(newVideo);
     this.dialogRef.close();
   }

@@ -27,7 +27,7 @@ export class VideoService implements OnDestroy {
     return throwError(error.message || "server error.");
   }
   editVideo(item: UserVideos) {
-    
+    console.log('video service edit video data',item);
     this.sub = this._http.post(`api/youTubeList/editVideo`, { videoId: item.videoId, videoName: item.videoName, keyWords: item.keyWords })
       .pipe(
 

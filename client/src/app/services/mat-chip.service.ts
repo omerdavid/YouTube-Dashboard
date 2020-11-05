@@ -11,7 +11,8 @@ export class MatChipService {
   //private data$:BehaviorSubject<any>=new BehaviorSubject<any>([]);
   private _data:any[]=[];
   public get data (){return this._data;};
-
+  public set data (keyWords){ this._data=keyWords;};
+  
   public readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   
   constructor() { }
