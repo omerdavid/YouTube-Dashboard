@@ -49,8 +49,28 @@ const youTubeService = {
         }
     },
     updateVideos: async (userVideos) => {
-      let updatedVideos=  await videoModel.updateVideos(userVideos);
+      let updatedVideos=  await videoModel.updateRankAndDateCheckedVideos(userVideos);
       return updatedVideos;
+    },
+    updateVideoName:async(videoId,VideoName)=>{
+          await videoModel.updateVideoName(videoId,VideoName);
+        
+    },
+    deleteKeyWordsFromVideo:async(videoFromDb,videoFromClient)=>{
+          const dbKeyWords=youTubeService.createDto(videoFromDb);
+          const clientKeyWords=videoFromClient.keyWords;
+          
+
+         let keyWordsToDelete= dbKeyWords[0].keyWords.filter(v=>!clientKeyWords.find(g=>g.name==v.name));
+
+          for(let keyWord of keyWordsToDelete){
+            await videoModel.deleteVideoKeyWords(keyWord);
+          }
+      
+         
+    },
+    addNewKeyWordsToVideos:async(videoFromDb,videoFromClient)=>{
+      
     },
     rankVideos: async (videosPerKeyWord) => {
 
@@ -60,7 +80,7 @@ const youTubeService = {
             let rank = videosArr.findIndex(x => x.id.videoId == video.videoId);
             
             video.rank = rank + 1;
-            video.dateChecked = moment().format('DD/MM/yyyy');
+            video.dateChecked = moment().format('DD/MM/yyyy').toDate();
         }
         return videosPerKeyWord;
     },
@@ -69,6 +89,16 @@ const youTubeService = {
             let userVideos = await videoModel.findVideosByUserId(userId);
 
             return userVideos;
+
+        } catch (err) {
+            logger.debug(err);
+        }
+    },
+    getVideoById:async(videoId)=>{
+        try {
+            let videos = await videoModel.findById(videoId);
+
+            return videos;
 
         } catch (err) {
             logger.debug(err);
@@ -91,7 +121,8 @@ const youTubeService = {
 
                     return {
                         dateChecked: kw.dateChecked,
-                        rank: kw.rank
+                        rank: kw.rank,
+                        id:kw._id
                     };
                 });
                 videsoKeyWords.push({

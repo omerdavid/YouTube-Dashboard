@@ -54,5 +54,33 @@ router.route('/addVideo').post(async (req, res) => {
   catch (err) { logger.debug(err); }
 });
 
+router.route('/editVideo').post(async (req, res) => {
+  try {
+     
+     const videoFromClient=req.body.video;
+    
+    let videoFromDb = await youTubeService.getVideoById(videoFromClient.videoId); 
+
+    if(!videoFromDb||videoFromDb.length==0)
+    {
+      res.status(200).json({ "statusCode": 201, "res": "did not find matched video" });
+    }
+    //If video name was changed update the new name
+
+      if(videoFromDb[0].videoName!=videoFromClient.videoName){
+    await youTubeService.updateVideoName(videoFromClient.videoId,videoFromClient.videoName);
+  }
+      await youTubeService.deleteKeyWordsFromVideo(videoFromDb,videoFromClient);
+
+      await youTubeService.addNewKeyWordsToVideos(videoFromDb,videoFromClient);
+  
+    //let userVideo=  youTubeService.createDto(updatedVideos);
+    
+   
+    res.status(200).json({ "statusCode": 200, "res": videoFromDb });
+  }
+
+  catch (err) { logger.debug(err); }
+});
 
 module.exports = router;

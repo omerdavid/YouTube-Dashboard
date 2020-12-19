@@ -82,7 +82,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
     });
   }
   openEditDialog(row){ 
-  
+     console.log('on edit open :',row);
     const dialogRef = this.dialogService.open(EditDialogComponent, {
       data:row 
     });

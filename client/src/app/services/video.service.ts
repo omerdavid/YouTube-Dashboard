@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subject, Subscription, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { KeyWord, UserVideos } from '../pages/tables/models/youTube-results';
 
 @Injectable({
@@ -28,9 +28,9 @@ export class VideoService implements OnDestroy {
   }
   editVideo(item: UserVideos) {
     console.log('video service edit video data',item);
-    this.sub = this._http.post(`api/youTubeList/editVideo`, { videoId: item.videoId, videoName: item.videoName, keyWords: item.keyWords })
+    this.sub = this._http.post(`api/youTubeList/editVideo`, { video: item })
       .pipe(
-
+       tap(console.log),
         catchError(this.errorHandler)
       ).subscribe((d: UserVideos[]) => {
         this.editVideoSubject$.next(d);

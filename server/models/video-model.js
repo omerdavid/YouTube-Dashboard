@@ -1,16 +1,18 @@
 var mongoose = require('mongoose');
-const dbConfig = require('../config/db');
 const logger = require('../services/log-handler');
-const mongooseService = require('../services/mongooseService.js')
+const mongooseService = require('../services/mongooseService.js');
+const moment = require('moment');
 
 let Video = mongoose.model('Video', new mongoose.Schema({
 
     videoId: String,
     videoName:String,
     userId: String,
-    dateChecked: String,
+    dateChecked: Date,
     rank: String,
-    keyWord: String
+    keyWord: String,
+    updatedOn:Date,
+    isDeleted:Boolean
 
 
 }));
@@ -32,7 +34,9 @@ let videoModel = {
                     videoName:videoName,
                     dateChecked: dateChecked,
                     keyWord: keyWord,
-                    rank: rank
+                    rank: rank,
+                    updatedOn:moment().format('DD/MM/yyyy').toDate(),
+                    isDeleted:false
                 };
 
                 let response = await col.insertOne(newVideo);
@@ -50,7 +54,7 @@ let videoModel = {
             throw err;
         }
     },
-    updateVideos: async (userVideos) => {
+    updateRankAndDateCheckedVideos: async (userVideos) => {
 
         try {
             const videoCol = await mongooseService.collection('videos');
@@ -64,21 +68,35 @@ let videoModel = {
             logger.debug(err);
             logger.log(err);
         }
-        // videoCol.updateMany(
-        // { _id: { $in: _ids } },
-        // { $set: { rank : 'rank' }},
-        // { $set: { dateChecked : 'rank' }}
-        // );
+     
+    },
+    updateVideoName:async(videoId,_videoName)=>{
+        await Video.updateMany({ _id: videoId}, { $set: { videoName:_videoName } });
+    },
+    
+    deleteVideoKeyWords:async(keyWord)=>{
+        
+        
+        try {
+            const videoCol = await mongooseService.collection('videos');
+            
+            for (let v of keyWord.data) {
+              
+                await videoCol.updateOne({ _id: v.id }, { $set: { isDeleted: true} });
+            }
+          
+        } catch (err) {
+            logger.debug(err);
+            logger.log(err);
+        }
 
-        // const col=  await mongooseService.collection('videos');
-        //col.updateMany();
     },
     findVideosByUserId: async (userId) => {
 
         try {
 
             const videoCol = await mongooseService.collection('videos');
-            let userVideos = await videoCol.find({ 'userId': userId }).toArray();
+            let userVideos = await videoCol.find({isDeleted : { $exists: false } , 'userId': userId}).toArray();
             return userVideos;
         } catch (err) {
             logger.debug(err);
@@ -86,19 +104,13 @@ let videoModel = {
 
     },
 
-    findById: (_videoId, cb) => {
+    findById:async (_videoId) => {
         try {
-            mongoose.connect(dbConfig.url + dbConfig.DB, { useNewUrlParser: true, useUnifiedTopology: true });
+            const videoCol = await mongooseService.collection('videos');
 
 
-            const db = mongoose.connection;
-
-            db.collection('videos').findOne({ videoId: _videoId })
-                .then((_video) => {
-                    cb(_video);
-                }).catch((err) => {
-                    logger.debug(err);
-                });
+            let videos = await videoCol.find({ 'videoId': _videoId }).toArray();
+            return videos;
         } catch (err) { logger.debug(err); }
     }
 }
