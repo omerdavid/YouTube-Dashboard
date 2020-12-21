@@ -1,7 +1,7 @@
 
     <h3 mat-dialog-title style="color: black;">EDIT Video</h3>
 
-    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"  (ngSubmit)="submit()"  [formGroup]="dialogForm">
+    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;"    [formGroup]="dialogForm">
         
       <div class="form-group">
 
@@ -38,7 +38,7 @@
           </mat-form-field>
         </div>
         <div mat-dialog-actions>
-          <button #save mat-button [type]="submit" [disabled]="!dialogForm.valid"  [mat-dialog-close]="1"
+          <button #save mat-button (click)="submit()" [disabled]="!dialogForm.valid"  [mat-dialog-close]="1"
              >Save</button>
           <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
       </div>

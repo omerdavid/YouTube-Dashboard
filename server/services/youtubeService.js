@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const logger = require('./log-handler');
 
-const moment = require('moment');
+
 
 const { groupBy } = require('lodash');
 
@@ -57,6 +57,7 @@ const youTubeService = {
         
     },
     deleteKeyWordsFromVideo:async(videoFromDb,videoFromClient)=>{
+
           const dbKeyWords=youTubeService.createDto(videoFromDb);
           const clientKeyWords=videoFromClient.keyWords;
           
@@ -69,8 +70,31 @@ const youTubeService = {
       
          
     },
-    addNewKeyWordsToVideos:async(videoFromDb,videoFromClient)=>{
+    addNewKeyWordsToVideos:async(videoFromDb,videoFromClient,userId)=>{
+         
+        const dbKeyWords=youTubeService.createDto(videoFromDb)[0];
+          const clientKeyWords=videoFromClient.keyWords;
+          
+
+         let keyWordsToAdd=clientKeyWords.filter(v=>!dbKeyWords.keyWords.find(g=>g.name==v.name));
+          
+            await  youTubeService.addVideoAndKeyWords(dbKeyWords.videoId,dbKeyWords.videoName,keyWordsToAdd,userId);
+         
+    },
+    addVideoAndKeyWords:async(videoId,videoName ,keyWords, userId)=>{
+
+        let newAddedVideos = await youTubeService.addVideo(videoId,videoName ,keyWords, userId); 
+
+        let rankedVideos=await youTubeService.rankVideos(newAddedVideos);
       
+       let updatedVideos= await youTubeService.updateVideos(rankedVideos);
+
+       return updatedVideos;
+    },
+    deleteVideo:async(videoId)=>{
+
+        await videoModel.deleteVideo(videoId);
+
     },
     rankVideos: async (videosPerKeyWord) => {
 
@@ -80,7 +104,7 @@ const youTubeService = {
             let rank = videosArr.findIndex(x => x.id.videoId == video.videoId);
             
             video.rank = rank + 1;
-            video.dateChecked = moment().format('DD/MM/yyyy').toDate();
+            video.dateChecked =new Date();// moment().format('DD/MM/yyyy').toDate();
         }
         return videosPerKeyWord;
     },

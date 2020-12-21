@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 const logger = require('../services/log-handler');
 const mongooseService = require('../services/mongooseService.js');
-const moment = require('moment');
+
 
 let Video = mongoose.model('Video', new mongoose.Schema({
 
@@ -35,7 +35,7 @@ let videoModel = {
                     dateChecked: dateChecked,
                     keyWord: keyWord,
                     rank: rank,
-                    updatedOn:moment().format('DD/MM/yyyy').toDate(),
+                  updatedOn:new Date(),
                     isDeleted:false
                 };
 
@@ -71,7 +71,7 @@ let videoModel = {
      
     },
     updateVideoName:async(videoId,_videoName)=>{
-        await Video.updateMany({ _id: videoId}, { $set: { videoName:_videoName } });
+        await Video.updateMany({ videoId: videoId}, { $set: { videoName:_videoName } });
     },
     
     deleteVideoKeyWords:async(keyWord)=>{
@@ -91,12 +91,38 @@ let videoModel = {
         }
 
     },
+    deleteVideo:async(videoId)=>{
+        try {
+            const videoCol = await mongooseService.collection('videos');
+              
+                await videoCol.updateMany({ videoId: videoId}, { $set: { isDeleted: true} });
+          
+          
+        } catch (err) {
+            logger.debug(err);
+            logger.log(err);
+        }
+    },
+    addNewKeyWordsToVideos:async(keyWord)=>{
+        try {
+            const videoCol = await mongooseService.collection('videos');
+            
+            for (let v of keyWord.data) {
+              
+                await videoCol.insertOne({ _id: v.id }, { $set: { isDeleted: true} });
+            }
+          
+        } catch (err) {
+            logger.debug(err);
+            logger.log(err);
+        }
+    },
     findVideosByUserId: async (userId) => {
 
         try {
 
             const videoCol = await mongooseService.collection('videos');
-            let userVideos = await videoCol.find({isDeleted : { $exists: false } , 'userId': userId}).toArray();
+            let userVideos = await videoCol.find({$and:[{$or:[{isDeleted:{$exists:false}},{isDeleted:false}]},{'userId': userId}]  }).toArray();
             return userVideos;
         } catch (err) {
             logger.debug(err);

@@ -9,12 +9,17 @@ import { KeyWord, UserVideos } from '../pages/tables/models/youTube-results';
 })
 export class VideoService implements OnDestroy {
 
+  private VideoDeletedSubject$: Subject<UserVideos[]> = new Subject<UserVideos[]>();
+  public VideoDeleted$: Observable<UserVideos[]>=this.VideoDeletedSubject$.asObservable();
+ 
+
   public newVideoAdd$: Observable<UserVideos[]>;
   private newVideoAddSubject$: Subject<UserVideos[]> = new Subject<UserVideos[]>();
 
 
   private editVideoSubject$: Subject<UserVideos[]> = new Subject<UserVideos[]>();
   public editVideo$: Observable<UserVideos[]> = this.editVideoSubject$.asObservable();
+
   sub: Subscription;
   constructor(public _http: HttpClient) { this.newVideoAdd$ = this.newVideoAddSubject$.asObservable(); }
   ngOnDestroy(): void {
@@ -27,17 +32,15 @@ export class VideoService implements OnDestroy {
     return throwError(error.message || "server error.");
   }
   editVideo(item: UserVideos) {
-    console.log('video service edit video data',item);
+   
     this.sub = this._http.post(`api/youTubeList/editVideo`, { video: item })
       .pipe(
-       tap(console.log),
         catchError(this.errorHandler)
       ).subscribe((d: UserVideos[]) => {
         this.editVideoSubject$.next(d);
       });
   }
   addVideo(newVideo: UserVideos) {
-    const testVideoId = 'ILooaM258IA';
 
     this._http.post(`api/youTubeList/addVideo`, { videoId: newVideo.videoId, videoName: newVideo.videoName, keyWords: newVideo.keyWords })
       .pipe(
@@ -58,5 +61,15 @@ export class VideoService implements OnDestroy {
      obj.description=description;
      return obj;
 
+  }
+  deleteVideo(videoId){
+    this._http.post(`api/youTubeList/deleteVideo`, { videoId:videoId})
+    .pipe(
+
+      catchError(this.errorHandler)
+    ).subscribe((d: UserVideos[]) => {
+      console.log('video deleted');
+      this.VideoDeletedSubject$.next(d);
+    });
   }
 }

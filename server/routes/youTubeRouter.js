@@ -32,13 +32,7 @@ router.route('/addVideo').post(async (req, res) => {
     const videoName=req.body.videoName;
 
     
-    let newAddedVideos = await youTubeService.addVideo(videoId,videoName ,keyWords, user.id); 
-
-    //let userVideos = await youTubeService.getUserVideos(user.id);
-
-    let rankedVideos=await youTubeService.rankVideos(newAddedVideos);
-  
-   let updatedVideos= await youTubeService.updateVideos(rankedVideos);
+   let updatedVideos=await youTubeService.addVideoAndKeyWords(videoId,videoName,keyWords,user.id);
   
     let userVideo=  youTubeService.createDto(updatedVideos);
     
@@ -58,7 +52,8 @@ router.route('/editVideo').post(async (req, res) => {
   try {
      
      const videoFromClient=req.body.video;
-    
+     let user = req.user;
+
     let videoFromDb = await youTubeService.getVideoById(videoFromClient.videoId); 
 
     if(!videoFromDb||videoFromDb.length==0)
@@ -72,12 +67,31 @@ router.route('/editVideo').post(async (req, res) => {
   }
       await youTubeService.deleteKeyWordsFromVideo(videoFromDb,videoFromClient);
 
-      await youTubeService.addNewKeyWordsToVideos(videoFromDb,videoFromClient);
+      await youTubeService.addNewKeyWordsToVideos(videoFromDb,videoFromClient,user.id);
   
     //let userVideo=  youTubeService.createDto(updatedVideos);
     
    
     res.status(200).json({ "statusCode": 200, "res": videoFromDb });
+  }
+
+  catch (err) { logger.debug(err); }
+});
+router.route('/deleteVideo').post(async (req, res) => {
+  try {
+ 
+  
+    let videoId = req.body.videoId;
+   
+    let user = req.user;
+    
+    await youTubeService.deleteVideo(videoId,user.id);
+  
+   let videoFromDb = await youTubeService.getVideoById(videoId); 
+
+    let userVideo=  youTubeService.createDto(videoFromDb);
+   
+    res.status(200).json({ "statusCode": 200, "res": userVideo });
   }
 
   catch (err) { logger.debug(err); }

@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -7,9 +7,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { sortBy } from 'lodash';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { throwError } from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { AddDialogComponent } from 'src/app/dialog/add-dialog/add-dialog.component';
+import { DeleteDialogComponent } from 'src/app/dialog/delete-dialog/delete-dialog.component';
 import { EditDialogComponent } from 'src/app/dialog/edit-dialog/edit-dialog.component';
 import { VideoService } from 'src/app/services/video.service';
 import { KeyWordData, UserVideos } from './models/youTube-results';
@@ -21,7 +22,7 @@ import { KeyWordData, UserVideos } from './models/youTube-results';
 
   styleUrls: ['./tables.component.scss']
 })
-export class TablesComponent implements OnInit, AfterViewInit {
+export class TablesComponent implements OnInit, AfterViewInit,OnDestroy {
 
   public displayedColumns: string[] = ['videoId', 'keyWords', 'rank', 'actions'];
 
@@ -32,6 +33,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
 
   @Output() onRowSelected: EventEmitter<any> = new EventEmitter();
 
+  sub:Subscription[]=new Array<Subscription>();
   dataSource: MatTableDataSource<UserVideos>;
   selectedProducts: UserVideos[];
   product: UserVideos;
@@ -46,6 +48,13 @@ export class TablesComponent implements OnInit, AfterViewInit {
   constructor(private httpClient: HttpClient,
     private messageService: MessageService,
     private confirmationService: ConfirmationService, private _sanitizer: DomSanitizer, public dialogService: MatDialog,private videoService:VideoService) { }
+  ngOnDestroy(): void {
+    if(this.sub){
+   this.sub.forEach(val=>{
+val.unsubscribe();
+   });
+  }
+  }
   ngAfterViewInit(): void {
   
   }
@@ -70,7 +79,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
       data: { issue: {} }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+  this.sub.push(dialogRef.afterClosed().subscribe(result => {
     // if (result === 1) {
 
        
@@ -79,28 +88,35 @@ export class TablesComponent implements OnInit, AfterViewInit {
         // this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
         //  this.refreshTable();
       //}
-    });
+    }));
   }
   openEditDialog(row){ 
-     console.log('on edit open :',row);
+   
     const dialogRef = this.dialogService.open(EditDialogComponent, {
       data:row 
     });
   }
-  deleteItem(){
-
+  deleteItem(row){
+    const dialogRef = this.dialogService.open(DeleteDialogComponent, {
+      data:row 
+    });
   }
   highlight(element: any) {
     element.highlighted = !element.highlighted;
   }
 
   ngOnInit() {
-    this.videoService.newVideoAdd$.subscribe((userVideo:UserVideos[])=>{
+   this.sub.push(this.videoService.newVideoAdd$.subscribe((userVideo:UserVideos[])=>{
       this.loadVideos();  
-    });
-    this.videoService.editVideo$.subscribe((userVideo:UserVideos[])=>{
+    }));
+    this.sub.push(this.videoService.editVideo$.subscribe((userVideo:UserVideos[])=>{
       this.loadVideos();  
-    });
+    }));
+
+    this.sub.push(this.videoService.VideoDeleted$.subscribe((userVideo:UserVideos[])=>{
+      this.loadVideos();  
+    }));
+
     this.loadVideos();
 
   }
@@ -114,7 +130,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
     //let keyword='ויטמיקס';
     //let myVideo='Vitamix Will It Blend - ויטמיקס שילמה 24 מיליון דולר על הפרת פטנט';
 
-    this.httpClient.get(`api/youTubeList`)
+  this.sub.push(this.httpClient.get(`api/youTubeList`)
       .pipe(
         map((f: any) => {
          
@@ -137,7 +153,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         , catchError(this.errorHandler))
       .subscribe((data: UserVideos[]) => {
 
-          
+          console.log('load items');
         // Flip flag to show that loading has finished.
         this.isLoading = false;
 
@@ -149,7 +165,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         this.onRowSelected.emit(data[0]);
         this.onKeyWordSelected.emit(data[0].keyWords[0])
 
-      });
+      }));
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

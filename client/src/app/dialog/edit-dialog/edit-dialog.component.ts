@@ -29,9 +29,7 @@ export class EditDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditDialogComponent>, public matChipService: MatChipService, private videoService: VideoService,
     @Inject(MAT_DIALOG_DATA) public _data: UserVideos, private fb: FormBuilder) {
 
-      console.log('edit row data :',_data);
       this.data = _data; 
-      
     
   }
 
@@ -63,20 +61,22 @@ export class EditDialogComponent implements OnInit {
         '';
   }
   submit() {
+   
   
-    console.log('is Form valid :',!!this.dialogForm.valid)
     if(!!this.dialogForm.valid){
     //go to server
      this.updateVideo();
     }
   }
   onNoClick(): void {
+  
     this.dialogRef.close();
   }
   updateVideo() {
+   
     const data =
       this.videoService.createUserVideosObject(this.data.videoId, this.data.videoUrl.toString(), this.formControls.videoName.value, this.matChipService.data);
-      console.log('update video date :',data)
+    
     this.videoService.editVideo(data);
     this.dialogRef.close();
   }

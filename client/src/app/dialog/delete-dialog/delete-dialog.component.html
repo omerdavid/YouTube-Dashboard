@@ -1,0 +1,22 @@
+
+    <h3 mat-dialog-title style="color: black;">Delete Video</h3>
+
+    <form class="mat-dialog-content d-flex flex-column " style="width: 30vw;height: 100%;overflow:inherit;">
+        
+      <div class="form-group">
+      
+        <p style="color: black;">Are you sure you want to delete </p>
+        {{data.videoName}} ?
+       
+        </div>
+      
+        <div class="form-group" >
+       
+        </div>
+        <div mat-dialog-actions>
+          <button #save mat-button (click)="submit()"   [mat-dialog-close]="1"
+             >Save</button>
+          <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+      </div>
+      
+    </form>
